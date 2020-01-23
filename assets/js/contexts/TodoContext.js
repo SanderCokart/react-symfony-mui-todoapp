@@ -52,16 +52,23 @@ class TodoContextProvider extends React.Component {
     updateTodo(data) {
         axios.put('/api/todo/update/' + data.id, data)
             .then(response => {
-                let todos = [...this.state.todos];
-                let todo = todos.find(todo => {
-                    return todo.id === data.id;
-                });
+                if (response.data.message.level === 'error') {
+                    this.setState({
+                        message: response.data.message,
+                    });
+                } else {
+                    let todos = [...this.state.todos];
+                    let todo = todos.find(todo => {
+                        return todo.id === data.id;
+                    });
 
-                todo.name = data.name;
+                    todo.name = data.name;
 
-                this.setState({
-                    todos: todos,
-                });
+                    this.setState({
+                        todos: todos,
+                        message: response.data.message,
+                    });
+                }
             }).catch(error => {
             console.error(error);
         });
@@ -71,17 +78,24 @@ class TodoContextProvider extends React.Component {
     deleteTodo(data) {
         axios.delete('/api/todo/delete/' + data.id)
             .then(response => {
-                //message
-                let todos = [...this.state.todos];
-                let todo = todos.find(todo => {
-                    return todo.id === data.id;
-                });
+                if (response.data.message.level === 'error') {
+                    this.setState({
+                        message: response.data.message,
+                    });
+                } else {
+                    //message
+                    let todos = [...this.state.todos];
+                    let todo = todos.find(todo => {
+                        return todo.id === data.id;
+                    });
 
-                todos.splice(todos.indexOf(todo), 1);
+                    todos.splice(todos.indexOf(todo), 1);
 
-                this.setState({
-                    todos: todos,
-                });
+                    this.setState({
+                        todos: todos,
+                        message: response.data.message
+                    });
+                }
             }).catch(error => {
             console.error(error);
         });
