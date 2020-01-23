@@ -81,8 +81,7 @@ function TodoTable() {
                                                  <IconButton onClick={() => {
                                                      setEditIsShown(false);
                                                  }}><CloseIcon/></IconButton>
-                                                 <IconButton onClick={onEditSubmit.bind(this, todo.id)}
-                                                             type="submit"><DoneIcon/></IconButton>
+                                                 <IconButton type="submit"><DoneIcon/></IconButton>
                                              </Fragment>,
                                          }}
                                      />

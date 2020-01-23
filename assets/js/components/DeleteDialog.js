@@ -14,8 +14,6 @@ function DeleteDialog(props) {
         props.setDeleteConfirmationIsShown(false);
     };
 
-    console.log(props);
-
     return (
         <Dialog onClose={hide} fullWidth={true} maxWidth='sm' open={props.open}>
             <DialogTitle>Are you sure you wish to delete this to-do?</DialogTitle>
@@ -36,8 +34,8 @@ function DeleteDialog(props) {
 }
 
 DeleteDialog.propTypes = {
-    open: PropTypes.bool,
-    setDeleteConfirmationIsShown: PropTypes.func,
+    open: PropTypes.bool.isRequired,
+    setDeleteConfirmationIsShown: PropTypes.func.isRequired,
     todo: PropTypes.shape({
         id: PropTypes.number.isRequired,
         name: PropTypes.string.isRequired,
