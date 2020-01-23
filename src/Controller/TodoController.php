@@ -41,14 +41,16 @@ class TodoController extends AbstractController
         try {
             $this->entityManager->persist($todo);
             $this->entityManager->flush();
+        } catch (Exception $exception) {
             return $this->json([
-                'todo' => $todo->toArray(),
+                'message' => ['text' => ['Could not submit To-Do to the database.'], 'level' => 'error']
             ]);
 
-        } catch (Exception $exception) {
-            //error
         }
-        return;
+        return $this->json([
+            'todo'    => $todo->toArray(),
+            'message' => ['text' => ['To-Do has been created!', 'Task: ' . $content->name], 'level' => 'success']
+        ]);
     }
 
 
@@ -76,19 +78,19 @@ class TodoController extends AbstractController
     public function update(Request $request, Todo $todo)
     {
         $content = json_decode($request->getContent());
-        
+
         $todo->setName($content->name);
-        
+
         try {
             $this->entityManager->flush();
         } catch (Exception $exception) {
             //error
         }
-        
+
         return $this->json([
             'message' => 'todo has been updated'
         ]);
-        
+
     }
 
 
