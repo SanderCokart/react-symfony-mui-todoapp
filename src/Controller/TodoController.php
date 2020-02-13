@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Todo;
 use App\Repository\TodoRepository;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -36,15 +37,15 @@ class TodoController extends AbstractController
 
         $todo = new Todo();
 
-        $todo->setName($content->name);
+        $todo->setTask($content->task);
         $todo->setDescription($content->description);
 
         try {
             $this->entityManager->persist($todo);
             $this->entityManager->flush();
-        } catch (Exception $exception) {
+        } catch (UniqueConstraintViolationException $exception) {
             return $this->json([
-                'message' => ['text' => 'Could not reach database when attempting to create a To-Do.', 'level' => 'error']
+                'message' => ['text' => 'Task has to be unique!', 'level' => 'error']
             ]);
 
         }
@@ -81,13 +82,13 @@ class TodoController extends AbstractController
         $content = json_decode($request->getContent());
 
 
-        if ($todo->getName() === $content->name && $todo->getDescription() === $content->description) {
+        if ($todo->getTask() === $content->task && $todo->getDescription() === $content->description) {
             return $this->json([
-                'message' => ['text' => 'There was no change to the To-Do. Neither the name or the description was changed.', 'level' => 'error']
+                'message' => ['text' => 'There was no change to the To-Do. Neither the task or the description was changed.', 'level' => 'error']
             ]);
         }
 
-        $todo->setName($content->name);
+        $todo->setTask($content->task);
         $todo->setDescription($content->description);
 
         try {
