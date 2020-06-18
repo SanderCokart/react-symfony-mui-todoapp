@@ -50,7 +50,7 @@ const Navigation = (props) => {
                               underline="none"
                               key={index}
                               onClick={() => props.history.push(item.link)}>
-                            <ListItem button onClick={() => console.log('test')}>
+                            <ListItem button>
                                 {item.icon && <ListItemIcon>{item.icon}</ListItemIcon>}
                                 <ListItemText primary={item.text}/>
                             </ListItem>
