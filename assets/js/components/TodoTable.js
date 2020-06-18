@@ -1,4 +1,4 @@
-import {Typography} from '@material-ui/core';
+import {makeStyles, Typography} from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -15,6 +15,12 @@ import CloseIcon from '@material-ui/icons/Close';
 import DeleteIcon from '@material-ui/icons/Delete';
 import DeleteDialog from './DeleteDialog';
 
+const useStyles = makeStyles(theme => ({
+    thead: {
+        backgroundColor: 'red'
+    }
+}));
+
 
 function TodoTable() {
     const context = useContext(TodoContext);
@@ -25,6 +31,8 @@ function TodoTable() {
     const [editTodoDescription, setEditTodoDescription] = useState('');
     const [deleteConfirmationIsShown, setDeleteConfirmationIsShown] = useState(false);
     const [todoToBeDeleted, setTodoToBeDeleted] = useState(null);
+
+    const classes = useStyles();
 
     const onCreateSubmit = (event) => {
         event.preventDefault();
@@ -44,7 +52,7 @@ function TodoTable() {
 
             <Table>
                 {/*HEAD*/}
-                <TableHead>
+                <TableHead className={classes.thead}>
                     <TableRow>
                         <TableCell>Task</TableCell>
                         <TableCell>Description</TableCell>
@@ -86,65 +94,65 @@ function TodoTable() {
                             {/*NAME*/}
                             <TableCell>
                                 {editIsShown === todo.id ?
-                                    <form onSubmit={onEditSubmit.bind(this, todo.id)}>
-                                        <TextField
-                                            type="text"
-                                            fullWidth={true}
-                                            autoFocus={true}
-                                            value={editTodoName}
-                                            onChange={(event) => {
-                                                setEditTodoName(event.target.value);
-                                            }}
-                                        />
-                                    </form>
-                                    :
-                                    <Typography>{todo.task}</Typography>
+                                 <form onSubmit={onEditSubmit.bind(this, todo.id)}>
+                                     <TextField
+                                         type="text"
+                                         fullWidth={true}
+                                         autoFocus={true}
+                                         value={editTodoName}
+                                         onChange={(event) => {
+                                             setEditTodoName(event.target.value);
+                                         }}
+                                     />
+                                 </form>
+                                                         :
+                                 <Typography>{todo.task}</Typography>
                                 }
                             </TableCell>
 
                             {/*DESCRIPTION*/}
                             <TableCell>
                                 {editIsShown === todo.id ?
-                                    <TextField
-                                        type="text"
-                                        fullWidth={true}
-                                        value={editTodoDescription}
-                                        onChange={(event) => setEditTodoDescription(event.target.value)}
-                                        multiline={true}
-                                    />
-                                    :
-                                    <Typography style={{whiteSpace: 'pre-wrap'}}>{todo.description}</Typography>
+                                 <TextField
+                                     type="text"
+                                     fullWidth={true}
+                                     value={editTodoDescription}
+                                     onChange={(event) => setEditTodoDescription(event.target.value)}
+                                     multiline={true}
+                                 />
+                                                         :
+                                 <Typography style={{whiteSpace: 'pre-wrap'}}>{todo.description}</Typography>
                                 }
                             </TableCell>
 
                             <TableCell align="right">
 
                                 {editIsShown === todo.id ?
-                                    <Fragment>
-                                        <IconButton onClick={onEditSubmit.bind(this, todo.id)}>
-                                            <DoneIcon/>
-                                        </IconButton>
-                                        <IconButton onClick={() => setEditIsShown(false)}>
-                                            <CloseIcon/>
-                                        </IconButton>
-                                    </Fragment>
-                                    :
-                                    <Fragment>
-                                        <IconButton onClick={() => {
-                                            setEditIsShown(todo.id);
-                                            setEditTodoName(todo.task);
-                                            setEditTodoDescription(todo.description);
-                                        }}>
-                                            <EditIcon/>
-                                        </IconButton>
+                                 <Fragment>
+                                     <IconButton onClick={onEditSubmit.bind(this, todo.id)}>
+                                         <DoneIcon/>
+                                     </IconButton>
+                                     <IconButton onClick={() => setEditIsShown(false)}>
+                                         <CloseIcon/>
+                                     </IconButton>
+                                 </Fragment>
+                                                         :
+                                 <Fragment>
+                                     <IconButton onClick={() => {
+                                         setEditIsShown(todo.id);
+                                         setEditTodoName(todo.task);
+                                         setEditTodoDescription(todo.description);
+                                     }}>
+                                         <EditIcon/>
+                                     </IconButton>
 
-                                        <IconButton onClick={() => {
-                                            setDeleteConfirmationIsShown(true);
-                                            setTodoToBeDeleted(todo);
-                                        }}>
-                                            <DeleteIcon/>
-                                        </IconButton>
-                                    </Fragment>
+                                     <IconButton onClick={() => {
+                                         setDeleteConfirmationIsShown(true);
+                                         setTodoToBeDeleted(todo);
+                                     }}>
+                                         <DeleteIcon/>
+                                     </IconButton>
+                                 </Fragment>
                                 }
 
 
