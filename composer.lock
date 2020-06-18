@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c6c5c68b45f1fd29d93184ec90af847b",
+    "content-hash": "59ee2fd4592bfc5002c414edebc4a88a",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -4843,20 +4843,20 @@
         },
         {
             "name": "symfony/serializer",
-            "version": "v5.0.1",
+            "version": "v5.0.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/serializer.git",
-                "reference": "8d565a47eede00bd69f04db8050e5bae1b9553ad"
+                "reference": "38ef53cf477e4d2d6f69305630534ec180eba2b1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/serializer/zipball/8d565a47eede00bd69f04db8050e5bae1b9553ad",
-                "reference": "8d565a47eede00bd69f04db8050e5bae1b9553ad",
+                "url": "https://api.github.com/repos/symfony/serializer/zipball/38ef53cf477e4d2d6f69305630534ec180eba2b1",
+                "reference": "38ef53cf477e4d2d6f69305630534ec180eba2b1",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.2.5",
+                "php": ">=7.2.5",
                 "symfony/polyfill-ctype": "~1.8"
             },
             "conflict": {
@@ -4921,7 +4921,7 @@
             ],
             "description": "Symfony Serializer Component",
             "homepage": "https://symfony.com",
-            "time": "2019-11-28T14:32:28+00:00"
+            "time": "2020-06-07T15:38:39+00:00"
         },
         {
             "name": "symfony/serializer-pack",
@@ -6343,6 +6343,7 @@
                 "monolog",
                 "productivity"
             ],
+            "abandoned": true,
             "time": "2019-10-24T07:13:31+00:00"
         },
         {

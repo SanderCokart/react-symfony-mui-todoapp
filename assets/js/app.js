@@ -1,22 +1,32 @@
-import {CssBaseline} from '@material-ui/core';
+import {createMuiTheme, CssBaseline, MuiThemeProvider, responsiveFontSizes} from '@material-ui/core';
+import {indigo, deepPurple, grey} from '@material-ui/core/colors';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Router from './components/Router';
+import '../css/app.css';
 
-class App extends React.Component {
-
-    render() {
-        return (
-            <>
-                <CssBaseline/>
-                <Router/>
-            </>
-        );
-    }
+function App() {
+    return <Router/>;
 }
 
+const theme = createMuiTheme({
+    palette: {
+        type: 'dark',
+        primary: indigo,
+        secondary: deepPurple,
+    },
+});
+
+const responsiveTheme = responsiveFontSizes(theme);
+
 ReactDOM.render(
-    <App/>
+    <>
+        <MuiThemeProvider theme={responsiveTheme}>
+            <CssBaseline/>
+            <App/>
+        </MuiThemeProvider>
+
+    </>
     ,
     document.getElementById('root'),
 );
