@@ -1,4 +1,4 @@
-import {makeStyles, Typography} from '@material-ui/core';
+import {createStyles, makeStyles, Typography, useTheme, withStyles} from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -16,9 +16,9 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import DeleteDialog from './DeleteDialog';
 
 const useStyles = makeStyles(theme => ({
-    thead: {
-        backgroundColor: 'red'
-    }
+    td: {
+        padding: theme.spacing(10),
+    },
 }));
 
 
@@ -54,7 +54,7 @@ function TodoTable() {
                 {/*HEAD*/}
                 <TableHead className={classes.thead}>
                     <TableRow>
-                        <TableCell>Task</TableCell>
+                        <TableCell className={classes.td}>Task</TableCell>
                         <TableCell>Description</TableCell>
                         <TableCell align="right">Actions</TableCell>
                     </TableRow>
@@ -138,7 +138,7 @@ function TodoTable() {
                                  </Fragment>
                                                          :
                                  <Fragment>
-                                     <IconButton onClick={() => {
+                                     <IconButton color="primary" onClick={() => {
                                          setEditIsShown(todo.id);
                                          setEditTodoName(todo.task);
                                          setEditTodoDescription(todo.description);
@@ -146,7 +146,7 @@ function TodoTable() {
                                          <EditIcon/>
                                      </IconButton>
 
-                                     <IconButton onClick={() => {
+                                     <IconButton color="secondary" onClick={() => {
                                          setDeleteConfirmationIsShown(true);
                                          setTodoToBeDeleted(todo);
                                      }}>
