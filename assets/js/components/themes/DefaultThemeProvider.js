@@ -5,9 +5,7 @@ import {createMuiTheme, CssBaseline, MuiThemeProvider, responsiveFontSizes} from
 const theme = createMuiTheme({
     palette: {
         type: 'dark',
-        secondary: {
-            main: red['800'],
-        },
+        secondary: red,
         primary: green,
     },
 });

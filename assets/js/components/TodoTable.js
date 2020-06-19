@@ -16,8 +16,8 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import DeleteDialog from './DeleteDialog';
 
 const useStyles = makeStyles(theme => ({
-    td: {
-        padding: theme.spacing(10),
+    thead: {
+        backgroundColor: theme.palette.primary.main,
     },
 }));
 
@@ -50,42 +50,47 @@ function TodoTable() {
     return (
         <Fragment>
 
-            <Table>
+            <Table size="small">
                 {/*HEAD*/}
-                <TableHead className={classes.thead}>
-                    <TableRow>
-                        <TableCell className={classes.td}>Task</TableCell>
-                        <TableCell>Description</TableCell>
-                        <TableCell align="right">Actions</TableCell>
-                    </TableRow>
-                </TableHead>
-
-                {/*BODY*/}
-                <TableBody>
-                    {/*ADD*/}
+                <TableHead>
                     <TableRow>
                         <TableCell>
                             <form onSubmit={onCreateSubmit}>
-                                <TextField type="text" value={addTodoName} onChange={(event) => {
+                                <TextField variant="outlined" type="text" value={addTodoName} onChange={(event) => {
                                     setAddTodoName(event.target.value);
-                                }} label="New Task" fullWidth={true}/>
+                                }} label="Task" fullWidth={true}/>
                             </form>
                         </TableCell>
 
                         <TableCell>
                             <form>
-                                <TextField type="text" value={addTodoDescription} onChange={(event) => {
+                                <TextField variant="outlined" type="text" value={addTodoDescription} onChange={(event) => {
                                     setAddTodoDescription(event.target.value);
                                 }} label="Description" fullWidth={true} multiline={true}/>
                             </form>
                         </TableCell>
 
-                        <TableCell align="right">
-                            <IconButton onClick={onCreateSubmit}>
+                        <TableCell width={130} align="right">
+                            <IconButton color="primary" onClick={onCreateSubmit}>
                                 <AddIcon/>
                             </IconButton>
                         </TableCell>
                     </TableRow>
+                </TableHead>
+
+                <TableHead className={classes.thead}>
+                    <TableRow>
+                        <TableCell width={200}>Task</TableCell>
+                        <TableCell>Description</TableCell>
+                        <TableCell align="right">Actions</TableCell>
+                    </TableRow>
+                </TableHead>
+
+
+                {/*BODY*/}
+                <TableBody>
+                    {/*ADD*/}
+
 
                     {/*DATA*/}
                     {context.todos.slice().reverse().map((todo, index) => (
