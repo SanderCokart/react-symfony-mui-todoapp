@@ -1,10 +1,10 @@
-import {CssBaseline} from '@material-ui/core';
-import Typography from '@material-ui/core/Typography';
+//REACT
 import React from 'react';
 import ReactDOM from 'react-dom';
+//CUSTOM COMPONENTS
 import AppSnackbar from './components/AppSnackbar';
-import DefaultThemeProvider from './components/themes/DefaultThemeProvider';
 import TodoTable from './components/TodoTable';
+import DefaultThemeProvider from './components/themes/DefaultThemeProvider';
 import TodoContextProvider from './contexts/TodoContext';
 
 class App extends React.Component {

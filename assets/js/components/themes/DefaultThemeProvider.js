@@ -1,6 +1,9 @@
-import {green, red} from '@material-ui/core/colors';
+//REACT
 import React from 'react';
+//MUI COMPONENTS
 import {createMuiTheme, CssBaseline, MuiThemeProvider, responsiveFontSizes} from '@material-ui/core';
+//MUI COLORS
+import {green, red} from '@material-ui/core/colors';
 
 const theme = createMuiTheme({
     palette: {

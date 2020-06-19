@@ -1,6 +1,9 @@
-import {Snackbar, useTheme} from '@material-ui/core';
+//REACT
 import React, {useContext, useState} from 'react';
+//CONTEXT
 import {TodoContext} from '../contexts/TodoContext';
+//MUI COMPONENTS
+import {Snackbar, useTheme} from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
 
 
