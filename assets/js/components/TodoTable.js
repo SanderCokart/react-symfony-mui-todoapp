@@ -1,18 +1,28 @@
-import {createStyles, makeStyles, Typography, useTheme, withStyles} from '@material-ui/core';
-import IconButton from '@material-ui/core/IconButton';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import TextField from '@material-ui/core/TextField';
-import EditIcon from '@material-ui/icons/Edit';
-import AddIcon from '@material-ui/icons/Add';
+//REACT
 import React, {Fragment, useContext, useState} from 'react';
+//CONTEXT
 import {TodoContext} from '../contexts/TodoContext';
-import DoneIcon from '@material-ui/icons/Done';
-import CloseIcon from '@material-ui/icons/Close';
-import DeleteIcon from '@material-ui/icons/Delete';
+//MUI COMPONENTS
+import {
+    makeStyles,
+    Typography,
+    IconButton,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableRow,
+    TextField,
+} from '@material-ui/core';
+//MUI ICONS
+import {
+    Add as AddIcon,
+    Close as CloseIcon,
+    Delete as DeleteIcon,
+    Done as DoneIcon,
+    Edit as EditIcon,
+} from '@material-ui/icons';
+//CUSTOM COMPONENTS
 import DeleteDialog from './DeleteDialog';
 
 const useStyles = makeStyles(theme => ({
@@ -53,20 +63,34 @@ function TodoTable() {
             <Table size="small">
                 {/*HEAD*/}
                 <TableHead>
+                    {/*ADD*/}
                     <TableRow>
                         <TableCell>
                             <form onSubmit={onCreateSubmit}>
-                                <TextField variant="outlined" type="text" value={addTodoName} onChange={(event) => {
-                                    setAddTodoName(event.target.value);
-                                }} label="Task" fullWidth={true}/>
+                                <TextField variant="outlined"
+                                           type="text"
+                                           size="small"
+                                           value={addTodoName}
+                                           onChange={(event) => {
+                                               setAddTodoName(event.target.value);
+                                           }}
+                                           label="Task"
+                                           fullWidth={true}/>
                             </form>
                         </TableCell>
 
                         <TableCell>
                             <form>
-                                <TextField variant="outlined" type="text" value={addTodoDescription} onChange={(event) => {
-                                    setAddTodoDescription(event.target.value);
-                                }} label="Description" fullWidth={true} multiline={true}/>
+                                <TextField variant="outlined"
+                                           size="small"
+                                           type="text"
+                                           value={addTodoDescription}
+                                           onChange={(event) => {
+                                               setAddTodoDescription(event.target.value);
+                                           }}
+                                           label="Description"
+                                           fullWidth={true}
+                                           multiline={true}/>
                             </form>
                         </TableCell>
 
@@ -76,10 +100,7 @@ function TodoTable() {
                             </IconButton>
                         </TableCell>
                     </TableRow>
-                </TableHead>
-
-                <TableHead className={classes.thead}>
-                    <TableRow>
+                    <TableRow className={classes.thead}>
                         <TableCell width={200}>Task</TableCell>
                         <TableCell>Description</TableCell>
                         <TableCell align="right">Actions</TableCell>
@@ -89,9 +110,6 @@ function TodoTable() {
 
                 {/*BODY*/}
                 <TableBody>
-                    {/*ADD*/}
-
-
                     {/*DATA*/}
                     {context.todos.slice().reverse().map((todo, index) => (
                         <TableRow key={'todo ' + index}>
