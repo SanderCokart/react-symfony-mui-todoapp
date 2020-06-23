@@ -1,8 +1,10 @@
-import {CssBaseline} from '@material-ui/core';
+//REACT
 import React from 'react';
 import ReactDOM from 'react-dom';
+//CUSTOM COMPONENTS
 import AppSnackbar from './components/AppSnackbar';
 import TodoTable from './components/TodoTable';
+import DefaultThemeProvider from './components/themes/DefaultThemeProvider';
 import TodoContextProvider from './contexts/TodoContext';
 
 class App extends React.Component {
@@ -10,13 +12,15 @@ class App extends React.Component {
     render() {
         return (
             <TodoContextProvider>
-                <CssBaseline>
-                    <TodoTable/>
-                    <AppSnackbar/>
-                </CssBaseline>
+                <TodoTable/>
+                <AppSnackbar/>
             </TodoContextProvider>
         );
     }
 }
 
-ReactDOM.render(<App/>, document.getElementById('root'));
+ReactDOM.render(
+    <DefaultThemeProvider>
+        <App/>
+    </DefaultThemeProvider>
+    , document.getElementById('root'));

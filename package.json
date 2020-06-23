@@ -1,25 +1,28 @@
 {
-    "devDependencies": {
-        "@babel/preset-react": "^7.7.4",
-        "@symfony/webpack-encore": "^0.28.2",
-        "core-js": "^3.0.0",
-        "regenerator-runtime": "^0.13.2",
-        "webpack-notifier": "^1.6.0"
-    },
-    "license": "UNLICENSED",
-    "private": true,
-    "scripts": {
-        "dev-server": "encore dev-server",
-        "dev": "encore dev",
-        "watch": "encore dev --watch",
-        "build": "encore production --progress"
-    },
-    "dependencies": {
-        "@material-ui/core": "^4.8.0",
-        "@material-ui/icons": "^4.5.1",
-        "axios": "^0.19.0",
-        "prop-types": "^15.7.2",
-        "react": "^16.12.0",
-        "react-dom": "^16.12.0"
-    }
+  "devDependencies": {
+    "@babel/preset-react": "^7.7.4",
+    "@symfony/webpack-encore": "^0.28.2",
+    "core-js": "^3.0.0",
+    "regenerator-runtime": "^0.13.2",
+    "webpack-notifier": "^1.6.0"
+  },
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "dev-server": "encore dev-server",
+    "dev": "encore dev",
+    "watch": "encore dev --watch",
+    "build": "encore production --progress"
+  },
+  "dependencies": {
+    "@material-ui/core": "^4.8.0",
+    "@material-ui/icons": "^4.5.1",
+    "@material-ui/lab": "^4.0.0-alpha.56",
+    "axios": "^0.19.0",
+    "clsx": "^1.1.1",
+    "prop-types": "^15.7.2",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "react-is": "^16.13.1"
+  }
 }

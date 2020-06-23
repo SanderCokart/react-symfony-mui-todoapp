@@ -1,37 +1,21 @@
-import {Snackbar} from '@material-ui/core';
-import Button from '@material-ui/core/Button';
-import SnackbarContent from '@material-ui/core/SnackbarContent';
-import React, {Fragment, useContext} from 'react';
+//REACT
+import React, {useContext, useState} from 'react';
+//CONTEXT
 import {TodoContext} from '../contexts/TodoContext';
+//MUI COMPONENTS
+import {Snackbar, useTheme} from '@material-ui/core';
+import MuiAlert from '@material-ui/lab/Alert';
 
-function checkLevel(level) {
-    switch (level) {
-        case 'success':
-            return 'green';
-        case 'error':
-            return 'red';
-        default:
-            return 'white';
-    }
-}
 
-function AppSnackbar() {
+function AppSnackbar(props) {
     const context = useContext(TodoContext);
+    const {text, level} = context.message;
+
+
     return (
-        <Snackbar autoHideDuration={6000} open={context.message.text !== undefined}>
-            {context.message.text && (
-                <SnackbarContent style={{backgroundColor: checkLevel(context.message.level), whiteSpace: 'pre'}}
-                                 message={context.message.text}
-                                 action={[
-                                     <Button
-                                         onClick={() => context.setMessage({})}
-                                         key='dismiss'
-                                         color='inherit'
-                                     >
-                                         dismiss
-                                     </Button>,
-                                 ]}/>
-            )}
+        <Snackbar color="primary" autoHideDuration={1000} open={context.message.text !== undefined}>
+            <MuiAlert variant="filled" onClose={() => context.setMessage({})}
+                      severity={level === 'success' ? 'success' : 'warning'}>{text}</MuiAlert>
         </Snackbar>
     );
 }
