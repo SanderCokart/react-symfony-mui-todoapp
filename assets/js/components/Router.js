@@ -7,6 +7,7 @@ import TagTable from './TagTable';
 import Navigation from './Navigation';
 import NotFound from './NotFound';
 import TodoTable from './TodoTable';
+import Login from './Login';
 
 const TodoList = () => (
     <TodoContextProvider>
@@ -24,7 +25,7 @@ const useStyles = makeStyles(theme => ({
     offset: theme.mixins.toolbar,
 }));
 
-function Router(props) {
+function Router() {
     const classes = useStyles();
     return (
         <BrowserRouter>
@@ -34,6 +35,7 @@ function Router(props) {
                 <Redirect exact from="/" to="/todo-list"/>
                 <Route exact path="/todo-list" component={TodoList}/>
                 <Route exact path="/category-list" component={TagList}/>
+                <Route exact path="/login" component={Login}/>
                 <Route component={NotFound}/>
             </Switch>
         </BrowserRouter>
