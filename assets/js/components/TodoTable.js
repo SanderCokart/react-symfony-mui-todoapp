@@ -16,16 +16,12 @@ import {
 } from '@material-ui/core';
 //MUI ICONS
 import {
-    Add as AddIcon,
     Close as CloseIcon,
-    Delete as DeleteIcon,
     Done as DoneIcon,
     Edit as EditIcon,
 } from '@material-ui/icons';
 //CUSTOM COMPONENTS
 import DeleteDialog from './DeleteDialog';
-import Box from '@material-ui/core/Box';
-import Grid from '@material-ui/core/Grid';
 import AddTodo from './AddTodo';
 
 const useStyles = makeStyles(theme => ({
@@ -47,7 +43,8 @@ function TodoTable() {
 
 
     const onEditSubmit = (todoId, event) => {
-        event.preventDefault();
+        if (event !== undefined) event.preventDefault();
+
         context.updateTodo({
             id:          todoId,
             task:        editTodoName,
@@ -117,6 +114,14 @@ function TodoTable() {
                                         value={editTodoDescription}
                                         onChange={(event) => setEditTodoDescription(event.target.value)}
                                         multiline={true}
+                                        inputProps={{
+                                            onKeyPress: (e) => {
+                                                if (e.shiftKey && e.key === 'Enter') {
+                                                    e.preventDefault();
+                                                    onEditSubmit(todo.id);
+                                                }
+                                            },
+                                        }}
                                     />
                                     :
                                     <Typography style={{whiteSpace: 'pre-wrap'}}>{todo.description}</Typography>
@@ -129,16 +134,16 @@ function TodoTable() {
                             <TableCell align="right">
                                 {editIsShown === todo.id ?
                                     <Fragment>
-                                        <IconButton onClick={onEditSubmit.bind(this, todo.id)}>
+                                        <IconButton color="primary" onClick={onEditSubmit.bind(this, todo.id)}>
                                             <DoneIcon/>
                                         </IconButton>
-                                        <IconButton onClick={() => setEditIsShown(false)}>
+                                        <IconButton color="secondary" onClick={() => setEditIsShown(false)}>
                                             <CloseIcon/>
                                         </IconButton>
                                     </Fragment>
                                     :
                                     <Fragment>
-                                        <IconButton color="primary" onClick={() => {
+                                        <IconButton color="inherit" onClick={() => {
                                             setEditIsShown(todo.id);
                                             setEditTodoName(todo.task);
                                             setEditTodoDescription(todo.description);
@@ -146,11 +151,11 @@ function TodoTable() {
                                             <EditIcon/>
                                         </IconButton>
 
-                                        <IconButton color="secondary" onClick={() => {
+                                        <IconButton color="primary" onClick={() => {
                                             setDeleteConfirmationIsShown(true);
                                             setTodoToBeDeleted(todo);
                                         }}>
-                                            <DeleteIcon/>
+                                            <DoneIcon/>
                                         </IconButton>
                                     </Fragment>
                                 }

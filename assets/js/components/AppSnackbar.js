@@ -14,7 +14,11 @@ function AppSnackbar(props) {
 
     return (
         <Snackbar color="primary" autoHideDuration={1000} open={context.message.text !== undefined}>
-            <MuiAlert variant="filled" onClose={() => context.setMessage({})}
+            <MuiAlert variant="filled"
+                      onClose={() => context.setMessage({
+                          text: undefined,
+                          level: level,
+                      })}
                       severity={level === 'success' ? 'success' : 'warning'}>{text}</MuiAlert>
         </Snackbar>
     );
