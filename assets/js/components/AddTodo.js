@@ -26,10 +26,7 @@ const AddTodo = () => {
         if (event !== undefined) event.preventDefault();
 
 
-        context.createTodo(event, {
-            task:        state.task,
-            description: state.description,
-        });
+        context.createTodo(event, state);
 
         setState(initialState);
     };
