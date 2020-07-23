@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\TagRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
@@ -11,6 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=TagRepository::class)
+ * @UniqueEntity(message="The tag name must be unique.", fields={"name"})
  */
 class Tag
 {
@@ -22,7 +24,7 @@ class Tag
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=false)
+     * @ORM\Column(type="string", name="name", length=255, nullable=false, unique=true)
      * @Assert\NotBlank(message="The tag name cannot be blank.")
      * @Assert\Length(
      *      min = 2,
@@ -60,4 +62,5 @@ class Tag
 
         return $serializer->normalize($this, 'json');
     }
+
 }

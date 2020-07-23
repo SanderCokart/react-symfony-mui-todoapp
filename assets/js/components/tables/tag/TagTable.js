@@ -37,8 +37,6 @@ const TagTable = () => {
         if (!context.tags) context.read();
     }, [context]);
 
-    console.log(message);
-
     return (
         <TableContainer component={Paper}>
             <Table size="small">
@@ -49,7 +47,7 @@ const TagTable = () => {
                         </TableCell>
                     </TableRow>
                     <TableRow>
-                        <TableCell>{message.level === 'error' ? message.text.join('\n') : 'Tag Name'}</TableCell>
+                        <TableCell>Tag Name</TableCell>
                         <TableCell align="right">Actions</TableCell>
                     </TableRow>
                 </TableHead>

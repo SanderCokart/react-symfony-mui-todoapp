@@ -2,11 +2,11 @@
 
 namespace App\Controller;
 
-use App\Controller\Services\Message;
 use App\Entity\Tag;
 use App\Repository\TagRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntityValidator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -66,11 +66,17 @@ class TagController extends AbstractController
         $tag = new Tag();
         $tag->setName($content->name);
 
-        $tagNameError = $this->validator->validateProperty($tag, 'name');
+        $tagNameErrors = $this->validator->validate($tag);
 
         $errors = [];
-        if (sizeof($tagNameError) > 0) {
-            $errors[] = $tagNameError[0]->getMessage();
+        if (sizeof($tagNameErrors) > 0) {
+
+//            enable this to generate an array of all errors instead of just one
+//            foreach ($tagNameErrors as $tagNameError) {
+//                $errors[] = $tagNameError->getMessage();
+//            }
+
+            $errors[] = $tagNameErrors[0]->getMessage();
 
             return $this->json(
                 ['message' => ['text' => $errors, 'level' => 'error']]

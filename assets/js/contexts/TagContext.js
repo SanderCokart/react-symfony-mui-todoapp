@@ -10,7 +10,7 @@ class TagContextProvider extends React.Component {
             tags:      null,
             isLoading: false,
             message:   {
-                text:  '',
+                text:  null,
                 level: null,
             },
 
@@ -29,11 +29,11 @@ class TagContextProvider extends React.Component {
         this.setState({isLoading: true});
         try {
             const r = await axios.post('/api/tag/create', data);
-            const {createdTag, message} = r.data;
+            const createdTag = r.data.tag, message = r.data.message;
 
-            if (message.level === 'error') {
+            if (message !== undefined && message.level === 'error') {
                 this.setState({
-                    message:   message.text,
+                    message:   message,
                     isLoading: false,
                 });
             } else {
@@ -42,8 +42,8 @@ class TagContextProvider extends React.Component {
                     isLoading: false,
                 });
             }
-
         } catch (e) {
+            console.error(e);
             this.setState({
                 errors:    e,
                 isLoading: false,
@@ -82,16 +82,21 @@ class TagContextProvider extends React.Component {
      */
     async delete(data) {
         try {
+            if (this.state.isLoading) return;
+
+            this.setState({isLoading: true});
             const r = await axios.delete('/api/tag/delete/' + data.id);
             const newTags = [...this.state.tags].filter(tag => tag.id !== data.id);
 
             this.setState({
-                tags: newTags,
+                tags:      newTags,
+                isLoading: false,
             });
 
         } catch (e) {
             this.setState({
-                error: e,
+                error:     e,
+                isLoading: false,
             });
         }
     }
