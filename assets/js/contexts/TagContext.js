@@ -88,7 +88,7 @@ class TagContextProvider extends React.Component {
             let tags = [...this.state.tags];
             let tag = tags.find(tag => tag.id === data.id);
 
-            tag = data;
+            tag.name = data.name;
 
             this.setState({
                 tags:      tags,
