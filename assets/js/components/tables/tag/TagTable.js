@@ -9,7 +9,7 @@ import {
     TableCell,
     Typography,
     IconButton,
-    TableContainer, Paper,
+    TableContainer, Paper, TextField,
 } from '@material-ui/core';
 //MUI ICONS
 import {Edit as EditIcon, Done as DoneIcon, Close as CloseIcon} from '@material-ui/icons';
@@ -25,17 +25,35 @@ const TagTable = () => {
     const context = useContext(TagContext);
     const {tags, message} = context;
 
-    const initialState = {tagEditId: null};
-
-    const [state, setState] = useState(initialState);
-
-    const setEdit = (e) => {
-        setState({tagEditId: e.target.name ? e.target.name : null});
-    };
-
     useEffect(() => {
         if (!context.tags) context.read();
     }, [context]);
+
+    const initialState = {tagEditId: null};
+    const [state, setState] = useState(initialState);
+
+    const setEdit = (tag) => {
+        setState({
+            tagEditId: tag.id ? tag.id : null,
+            tag:       tag,
+        });
+    };
+
+    const handleChange = (e) => {
+        setState({
+            ...state,
+            tag: {
+                ...state.tag,
+                [e.target.name]: e.target.value,
+            },
+        });
+    };
+
+    const onEditSubmit = (e) => {
+        e.preventDefault();
+        context.update(state.tag);
+    };
+
 
     return (
         <TableContainer component={Paper}>
@@ -54,18 +72,27 @@ const TagTable = () => {
                 <TableBody>
                     {tags ? tags.map((tag, index) => (
                         <TableRow key={tag.id}>
-                            <TableCell><Typography>{tag.name}</Typography></TableCell>
+                            <TableCell>
+                                {state.tagEditId === tag.id ?
+                                    <form noValidate onSubmit={onEditSubmit}>
+                                        <TextField type="text" value={state.tag.name} name="name" fullWidth
+                                                   autoFocus onChange={handleChange}/>
+                                    </form>
+                                    :
+                                    <Typography>{tag.name}</Typography>
+                                }
+                            </TableCell>
                             <TableCell align="right">
                                 {state.tagEditId !== tag.id ?
                                     <>
-                                        <IconButton color="primary" name={tag.id} onClick={setEdit}>
+                                        <IconButton color="primary" onClick={() => setEdit(tag)}>
                                             <EditIcon/>
                                         </IconButton>
                                         <DeleteButton entity={tag}/>
                                     </>
                                     :
                                     <>
-                                        <IconButton color="primary">
+                                        <IconButton color="primary" onClick={onEditSubmit}>
                                             <DoneIcon/>
                                         </IconButton>
                                         <IconButton color="secondary" onClick={setEdit}>

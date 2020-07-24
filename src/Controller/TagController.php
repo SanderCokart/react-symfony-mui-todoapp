@@ -5,8 +5,6 @@ namespace App\Controller;
 use App\Entity\Tag;
 use App\Repository\TagRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntityValidator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -57,7 +55,6 @@ class TagController extends AbstractController
      * @Route("/create", name="api_tag_create", methods={"POST"})
      * @param Request $request
      * @return JsonResponse
-     * @throws Exception
      */
     public function create(Request $request)
     {
@@ -89,6 +86,43 @@ class TagController extends AbstractController
         return $this->json([
             'tag' => $tag->normalize(),
         ]);
+    }
+
+    /**
+     * @Route("/update/{id}", name="api_tag_update", methods={"PUT"})
+     * @param Request $request
+     * @param Tag $tag
+     * @return JsonResponse
+     */
+    public function update(Request $request, Tag $tag)
+    {
+        $content = json_decode($request->getContent());
+        $tag->setName($content->name);
+
+        $this->validator->validate($tag);
+
+        $validatorErrors = $this->validator->validate($tag);
+
+        $errors = [];
+        if (sizeof($validatorErrors) > 0) {
+
+//            enable this to generate an array of all errors instead of just one
+//            foreach ($validatorErrors as $error) {
+//                $errors[] = $error->getMessage();
+//            }
+
+            $errors[] = $validatorErrors[0]->getMessage();
+
+            return $this->json(
+                ['message' => ['text' => $errors, 'level' => 'error']]
+            );
+        } else {
+            $this->entityManager->flush();
+
+            return $this->json([
+                ['message' => ['text' => 'Tag has been updated!', 'level' => 'success']],
+            ]);
+        }
     }
 
     /**

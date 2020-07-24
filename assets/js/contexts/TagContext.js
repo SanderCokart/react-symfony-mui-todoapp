@@ -17,6 +17,7 @@ class TagContextProvider extends React.Component {
             read:   this.read.bind(this),
             create: this.create.bind(this),
             delete: this.delete.bind(this),
+            update: this.update.bind(this),
         };
     }
 
@@ -72,7 +73,35 @@ class TagContextProvider extends React.Component {
         }
     };
 
-    //update
+    /**
+     *
+     * @param data
+     * @returns {Promise<void>}
+     */
+    async update(data) {
+        try {
+            if (this.state.isLoading) return;
+            this.setState({isLoading: true});
+
+            const r = await axios.put('/api/tag/update/' + data.id, data);
+
+            let tags = [...this.state.tags];
+            let tag = tags.find(tag => tag.id === data.id);
+
+            tag = data;
+
+            this.setState({
+                tags:      tags,
+                isLoading: false,
+            });
+
+        } catch (e) {
+            this.setState({
+                error:     e,
+                isLoading: false,
+            });
+        }
+    }
 
     /**
      * delete
