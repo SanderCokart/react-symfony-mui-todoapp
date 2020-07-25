@@ -102,9 +102,6 @@ const TagTable = () => {
                             </TableCell>
                         </TableRow>
                     )) : null}
-
-                    {context.isLoading &&
-                     <TableRow><TableCell><Typography>Loading...</Typography></TableCell></TableRow>}
                 </TableBody>
             </Table>
         </TableContainer>

@@ -23,66 +23,62 @@ class TagContextProvider extends React.Component {
         };
     }
 
-    handleChange(oldTag, e) {
-        const tags = [...this.state.tags];
-
-        let tag = tags.find(tag => tag.id === oldTag.id);
-
-        tag.name = e.target.value;
-
-        this.setState({
-            ...this.state,
-            tags: tags,
-        });
-    }
-
-    resetTag(oldTag) {
-        console.log(oldTag);
-
-        const tags = [...this.state.tags];
-
-        let tag = tags.find(tag => tag.id === oldTag.id);
-
-        tag.name = oldTag.name;
-
-        this.setState({
-            ...this.state,
-            tags: tags,
-        });
-    }
-
-
     //create
     /**
      * @param data {object}
      * @param data.name {string}
      */
     async create(data) {
-        this.setState({isLoading: true});
-        try {
-            const r = await axios.post('/api/tag/create', data);
-            const createdTag = r.data.tag, message = r.data.message;
+        const newTagWithId = {
+            ...data,
+            id: this.findHighestId(),
+        };
+        this.setState({tags: [...this.state.tags, newTagWithId]});
 
-            if (message !== undefined && message.level === 'error') {
+        this.setState({isLoading: true});
+
+        const r = await axios.post('/api/tag/create', data);
+        const {tag: newTagFromServer, message} = r.data;
+
+        console.log(message);
+
+        if (message === undefined || message.level === 'error') {
+            //remove temporary tag
+            const tags = [...this.state.tags].filter(tag => tag.id !== newTagWithId.id);
+
+            this.setState({
+                isLoading: false,
+                tags:      tags,
+                message:   message,
+            });
+        } else {
+            //check if id matches otherwise replace
+            if (newTagFromServer.id !== newTagWithId.id) {
+                //find and replace id
+                const tags = [...this.state.tags];
+                let tag = tags.find(tag => tag.id === newTagWithId.id);
+
+                tag.id = newTagFromServer.id;
+
                 this.setState({
-                    message:   message,
+                    tags:      tags,
                     isLoading: false,
                 });
             } else {
-                this.setState({
-                    tags:      [...this.state.tags, createdTag],
-                    isLoading: false,
-                });
+                this.setState({isLoading: false});
             }
-        } catch (e) {
-            console.error(e);
-            this.setState({
-                errors:    e,
-                isLoading: false,
-            });
         }
-
     }
+
+
+    findHighestId(array = this.state.tags) {
+        let max = 0;
+        for (let i = 0, len = array.length; i < len; i++) {
+            if (array[i].id > max) max = array[i].id;
+        }
+        return max + 1;
+    }
+
 
     //read
     async read() {
@@ -138,15 +134,27 @@ class TagContextProvider extends React.Component {
     async delete(data) {
         try {
             if (this.state.isLoading) return;
-
             this.setState({isLoading: true});
-            const r = await axios.delete('/api/tag/delete/' + data.id);
-            const newTags = [...this.state.tags].filter(tag => tag.id !== data.id);
+
+            const tags = [...this.state.tags];
+
+            const newTags = tags.filter(tag => tag.id !== data.id);
 
             this.setState({
                 tags:      newTags,
                 isLoading: false,
             });
+
+            const r = await axios.delete('/api/tag/delete/' + data.id);
+
+            if (r.data.message === undefined || r.data.message.level === 'error') {
+                this.setState({
+                    tags:      tags,
+                    message:   r.data.message,
+                    isLoading: false,
+                });
+            }
+
 
         } catch (e) {
             this.setState({
@@ -154,6 +162,35 @@ class TagContextProvider extends React.Component {
                 isLoading: false,
             });
         }
+    }
+
+    /**
+     *
+     * @param oldTag {object} original tag
+     * @param e {object} event
+     */
+    handleChange(oldTag, e) {
+        const tags = [...this.state.tags];
+
+        let tag = tags.find(tag => tag.id === oldTag.id);
+
+        tag.name = e.target.value;
+
+        this.setState({
+            tags: tags,
+        });
+    }
+
+    resetTag(oldTag) {
+        const tags = [...this.state.tags];
+
+        let tag = tags.find(tag => tag.id === oldTag.id);
+
+        tag.name = oldTag.name;
+
+        this.setState({
+            tags: tags,
+        });
     }
 
     render() {

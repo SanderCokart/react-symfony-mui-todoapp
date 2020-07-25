@@ -67,14 +67,18 @@ class TagController extends AbstractController
         $errors = $this->validator->validate($tag);
 
         if (sizeof($errors) > 0) {
-            return $this->json(
-                ['message' => ['text' => $errors, 'level' => 'error']]
+            return $this->json([
+                    'message' => ['text' => $errors, 'level' => 'error']
+                ]
             );
         } else {
             $this->entityManager->persist($tag);
             $this->entityManager->flush();
 
-            return $this->json(['tag' => $tag->normalize(),]);
+            return $this->json([
+                'tag' => $tag->normalize(),
+                'message' => ['text' => 'Tag has been created!', 'level' => 'success']
+            ]);
         }
     }
 
