@@ -14,12 +14,43 @@ class TagContextProvider extends React.Component {
                 level: null,
             },
 
-            read:   this.read.bind(this),
-            create: this.create.bind(this),
-            delete: this.delete.bind(this),
-            update: this.update.bind(this),
+            read:         this.read.bind(this),
+            create:       this.create.bind(this),
+            delete:       this.delete.bind(this),
+            update:       this.update.bind(this),
+            handleChange: this.handleChange.bind(this),
+            resetTag:     this.resetTag.bind(this),
         };
     }
+
+    handleChange(oldTag, e) {
+        const tags = [...this.state.tags];
+
+        let tag = tags.find(tag => tag.id === oldTag.id);
+
+        tag.name = e.target.value;
+
+        this.setState({
+            ...this.state,
+            tags: tags,
+        });
+    }
+
+    resetTag(oldTag) {
+        console.log(oldTag);
+
+        const tags = [...this.state.tags];
+
+        let tag = tags.find(tag => tag.id === oldTag.id);
+
+        tag.name = oldTag.name;
+
+        this.setState({
+            ...this.state,
+            tags: tags,
+        });
+    }
+
 
     //create
     /**
@@ -80,20 +111,15 @@ class TagContextProvider extends React.Component {
      */
     async update(data) {
         try {
-            if (this.state.isLoading) return;
-            this.setState({isLoading: true});
-
-            const r = await axios.put('/api/tag/update/' + data.id, data);
-
-            let tags = [...this.state.tags];
+            const tags = [...this.state.tags];
             let tag = tags.find(tag => tag.id === data.id);
 
-            tag.name = data.name;
-
-            this.setState({
-                tags:      tags,
-                isLoading: false,
-            });
+            if (tag.name !== data.name) {
+                if (this.state.isLoading) return;
+                this.setState({isLoading: true});
+                const r = await axios.put('/api/tag/update/' + tag.id, tag);
+                this.setState({isLoading: false});
+            }
 
         } catch (e) {
             this.setState({

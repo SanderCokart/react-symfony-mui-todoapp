@@ -29,29 +29,28 @@ const TagTable = () => {
         if (!context.tags) context.read();
     }, [context]);
 
-    const initialState = {tagEditId: null};
+    const initialState = {
+        tagEditId: null,
+        tag:       null,
+    };
     const [state, setState] = useState(initialState);
 
     const setEdit = (tag) => {
         setState({
             tagEditId: tag.id ? tag.id : null,
-            tag:       tag,
-        });
-    };
-
-    const handleChange = (e) => {
-        setState({
-            ...state,
-            tag: {
-                ...state.tag,
-                [e.target.name]: e.target.value,
-            },
+            tag:       {...tag},
         });
     };
 
     const onEditSubmit = (e) => {
         e.preventDefault();
         context.update(state.tag);
+        setState(initialState);
+    };
+
+    const onClose = () => {
+        context.resetTag(state.tag);
+        setState(initialState);
     };
 
 
@@ -75,8 +74,8 @@ const TagTable = () => {
                             <TableCell>
                                 {state.tagEditId === tag.id ?
                                     <form noValidate onSubmit={onEditSubmit}>
-                                        <TextField type="text" value={state.tag.name} name="name" fullWidth
-                                                   autoFocus onChange={handleChange}/>
+                                        <TextField type="text" value={tag.name} name="name" fullWidth
+                                                   autoFocus onChange={(e) => context.handleChange(tag, e)}/>
                                     </form>
                                     :
                                     <Typography>{tag.name}</Typography>
@@ -95,7 +94,7 @@ const TagTable = () => {
                                         <IconButton color="primary" onClick={onEditSubmit}>
                                             <DoneIcon/>
                                         </IconButton>
-                                        <IconButton color="secondary" onClick={setEdit}>
+                                        <IconButton color="secondary" onClick={onClose}>
                                             <CloseIcon/>
                                         </IconButton>
                                     </>
