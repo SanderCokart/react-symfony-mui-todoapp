@@ -69,7 +69,7 @@ const TagTable = () => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {tags ? tags.map((tag, index) => (
+                    {tags && tags.map((tag, index) => (
                         <TableRow key={tag.id}>
                             <TableCell>
                                 {state.tagEditId === tag.id ?
@@ -84,7 +84,7 @@ const TagTable = () => {
                             <TableCell align="right">
                                 {state.tagEditId !== tag.id ?
                                     <>
-                                        <IconButton color="primary" onClick={() => setEdit(tag)}>
+                                        <IconButton color="inherit" onClick={() => setEdit(tag)}>
                                             <EditIcon/>
                                         </IconButton>
                                         <DeleteButton entity={tag}/>
@@ -101,7 +101,8 @@ const TagTable = () => {
                                 }
                             </TableCell>
                         </TableRow>
-                    )) : null}
+                    ))
+                    }
                 </TableBody>
             </Table>
         </TableContainer>

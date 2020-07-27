@@ -68,7 +68,7 @@ class TagController extends AbstractController
 
         if (sizeof($errors) > 0) {
             return $this->json([
-                    'message' => ['text' => $errors, 'level' => 'error']
+                    'alert' => ['text' => $errors, 'level' => 'warning']
                 ]
             );
         } else {
@@ -77,7 +77,7 @@ class TagController extends AbstractController
 
             return $this->json([
                 'tag' => $tag->normalize(),
-                'message' => ['text' => 'Tag has been created!', 'level' => 'success']
+                'alert' => ['text' => 'Tag has been created!', 'level' => 'success']
             ]);
         }
     }
@@ -98,12 +98,12 @@ class TagController extends AbstractController
 
         if (sizeof($errors) > 0) {
             return $this->json(
-                ['message' => ['text' => $errors, 'level' => 'error']]
+                ['alert' => ['text' => $errors, 'level' => 'error']]
             );
         } else {
             $this->entityManager->flush();
             return $this->json(
-                ['message' => ['text' => 'Tag has been updated!', 'level' => 'success']]
+                ['alert' => ['text' => 'Tag has been updated!', 'level' => 'success']]
             );
         }
     }
@@ -119,7 +119,7 @@ class TagController extends AbstractController
         $errors = $this->validator->validate($tag);
         if (sizeof($errors) > 0) {
             return $this->json([
-                ['message' => ['text' => $errors, 'level' => 'error']]
+                ['alert' => ['text' => $errors, 'level' => 'error']]
             ]);
         }
 
@@ -127,7 +127,7 @@ class TagController extends AbstractController
         $this->entityManager->flush();
 
         return $this->json(
-            ['message' => ['text' => 'Tag has been deleted!', 'level' => 'success']]
+            ['alert' => ['text' => 'Tag has been deleted!', 'level' => 'success']]
         );
     }
 }

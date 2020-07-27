@@ -14,6 +14,7 @@ import Navigation from './Navigation';
 import TodoTable from './TodoTable';
 import TagTable from './tables/tag/TagTable';
 import Providers from '../contexts/Providers';
+import AlertComponent from './alert/AlertComponent';
 
 const TodoList = () => (
     <div>
@@ -39,6 +40,7 @@ const Router = () => {
                     <Route exact path="/tag-list" component={TagTable}/>
                     <Route component={NotFound}/>
                 </Switch>
+                <AlertComponent/>
             </Providers>
         </BrowserRouter>
     );
