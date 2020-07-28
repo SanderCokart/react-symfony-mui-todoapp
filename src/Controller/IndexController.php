@@ -8,7 +8,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class IndexController extends AbstractController
 {
     /**
-     * @Route("/{reactRouting}", name="index", priority="-1", defaults={"reactRouting": null}, requirements={"reactRouting"="(api|todo-list|tag-list)"})
+     * @Route("/{react}", name="index", priority="-1", requirements={"react"=".*"})
      */
     public function index()
     {
