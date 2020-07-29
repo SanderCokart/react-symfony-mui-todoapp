@@ -2,7 +2,7 @@
 import React, {useContext} from 'react';
 import PropTypes from 'prop-types';
 //MUI COMPONENTS
-import IconButton from '@material-ui/core/IconButton';
+import {IconButton} from '@material-ui/core';
 //MUI ICONS
 import {Delete as DeleteIcon} from '@material-ui/icons';
 //CONTEXT

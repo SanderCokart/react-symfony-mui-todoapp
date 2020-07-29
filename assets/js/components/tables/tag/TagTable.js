@@ -9,21 +9,20 @@ import {
     TableCell,
     Typography,
     IconButton,
-    TableContainer, Paper, TextField,
+    TableContainer, Paper, TextField, useTheme, useMediaQuery,
 } from '@material-ui/core';
 //MUI ICONS
-import {Edit as EditIcon, Done as DoneIcon, Close as CloseIcon} from '@material-ui/icons';
+import {Edit as EditIcon, Done as DoneIcon, Close as CloseIcon, Refresh as RefreshIcon} from '@material-ui/icons';
 //CONTEXTS
 import {TagContext} from '../../../contexts/TagContext';
 //CUSTOM COMPONENTS
 import AddTag from './AddTag';
 import DeleteButton from './DeleteButton';
-import ExtractTextFromMessage from '../../functions/ExtractTextFromMessage';
 
 
 const TagTable = () => {
     const context = useContext(TagContext);
-    const {tags, message} = context;
+    const {tags} = context;
 
     useEffect(() => {
         if (!context.tags) context.read();
@@ -69,7 +68,7 @@ const TagTable = () => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {tags && tags.map((tag, index) => (
+                    {tags && tags.map(tag => (
                         <TableRow key={tag.id}>
                             <TableCell>
                                 {state.tagEditId === tag.id ?

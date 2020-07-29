@@ -68,16 +68,21 @@ class TagController extends AbstractController
 
         if (sizeof($errors) > 0) {
             return $this->json([
-                    'alert' => ['text' => $errors, 'level' => 'warning']
+                'alert' => [
+                    'text'  => $errors,
+                    'level' => 'warning'
                 ]
-            );
+            ]);
         } else {
             $this->entityManager->persist($tag);
             $this->entityManager->flush();
 
             return $this->json([
-                'tag' => $tag->normalize(),
-                'alert' => ['text' => 'Tag has been created!', 'level' => 'success']
+                'tag'   => $tag->normalize(),
+                'alert' => [
+                    'text'  => ['Tag has been created!', 'Tag name: ' . $content->name],
+                    'level' => 'success'
+                ]
             ]);
         }
     }
@@ -92,19 +97,29 @@ class TagController extends AbstractController
     function update(Request $request, Tag $tag)
     {
         $content = json_decode($request->getContent());
-        $tag->setName($content->name);
+
+        $newName = $content->name;
+        $oldName = $tag->getName();
+
+        $tag->setName($newName);
 
         $errors = $this->validator->validate($tag);
 
         if (sizeof($errors) > 0) {
-            return $this->json(
-                ['alert' => ['text' => $errors, 'level' => 'error']]
-            );
+            return $this->json([
+                'alert' => [
+                    'text'  => $errors,
+                    'level' => 'error'
+                ]
+            ]);
         } else {
             $this->entityManager->flush();
-            return $this->json(
-                ['alert' => ['text' => 'Tag has been updated!', 'level' => 'success']]
-            );
+            return $this->json([
+                'alert' => [
+                    'text'  => ['Tag has been updated!', 'From: ' . $oldName, 'To: ' . $newName],
+                    'level' => 'success',
+                ]
+            ]);
         }
     }
 
@@ -119,15 +134,21 @@ class TagController extends AbstractController
         $errors = $this->validator->validate($tag);
         if (sizeof($errors) > 0) {
             return $this->json([
-                ['alert' => ['text' => $errors, 'level' => 'error']]
+                'alert' => [
+                    'text'  => $errors,
+                    'level' => 'error'
+                ]
             ]);
         }
 
         $this->entityManager->remove($tag);
         $this->entityManager->flush();
 
-        return $this->json(
-            ['alert' => ['text' => 'Tag has been deleted!', 'level' => 'success']]
-        );
+        return $this->json([
+            'alert' => [
+                'text'  => ['Tag has been deleted!', 'Tag that got deleted: ' . $tag->getName()],
+                'level' => 'success'
+            ]
+        ]);
     }
 }

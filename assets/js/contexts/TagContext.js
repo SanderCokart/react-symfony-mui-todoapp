@@ -1,5 +1,8 @@
+//REACT
 import React, {createContext} from 'react';
+//AXIOS
 import axios from 'axios';
+//CONTEXTS
 import {AlertContext} from './AlertContext';
 
 export const TagContext = createContext();
@@ -25,66 +28,59 @@ class TagContextProvider extends React.Component {
     }
 
     /**
-     * CREATE
-     * creates a new tag object with a temporary id, puts it in the state, submits the data, check to see if the id
+     * Creates a new tag object with a temporary id, puts it in the state, submits the data, check to see if the id
      * matches, if it doesn't match replace it
-     * @param {object} data
-     * @param {string} data.name - name of the tag
+     * @param {object} tag - tag
+     * @param {string} tag.name - name of the tag
      */
-    async create(data) {
-        //store initial tags in case of undo
-        const initialTags = [...this.state.tags];
+    async create(tag) {
+        try {
+            if (this.state.isLoading) return;
+            else this.setState({isLoading: true});
 
-        //create tag object with client generated id for mapping
-        const newTagWithId = {
-            ...data,
-            id: this.findHighestId(),
-        };
-        //add the tag to the tags array in the state and set loading to true
-        this.setState({tags: [...initialTags, newTagWithId], isLoading: true});
+            //PREPARATION START
+            const initialTags = [...this.state.tags];
+            const newTagWithId = {...tag, id: this.findHighestId()};
+            this.setState({tags: [...initialTags, newTagWithId], isLoading: true});
+            //PREPARATION END
 
-        //await response and submit the data param
-        const r = await axios.post('/api/tag/create', data);
-        //destructure message as alert and tag as newTagFromServer
-        const {message: alert, tag: newTagFromServer} = r.data;
-
-        //if the alert level does NOT compare to 'success'
-        if (alert.level !== 'success') {
-            //set the alert in the AlertContext
-            //set loading to false and resubmit the initialTags
-            this.setState({
-                isLoading: false,
-                tags:      initialTags,
-            });
-
+            //REQUEST START
+            const r = await axios.post('/api/tag/create', tag, {timeout: 5000});
+            const {alert, tag: newTagFromServer} = r.data;
             this.context.setAlert(alert);
-        } else {
-            //check if id matches otherwise replace
-            if (newTagFromServer.id !== newTagWithId.id) {
+            //REQUEST END
 
-                //find and replace id
+            //SERVER SIDE ERROR START
+            if (alert.level !== 'success') {
+                this.setState({tags: initialTags, isLoading: false});
+                return;
+            }
+            //SERVER SIDE ERROR END
+
+            //CHECK IF SERVER DATA MATCHES CLIENT DATA START
+            if (newTagFromServer.id !== newTagWithId.id) {
                 const tags = [...this.state.tags];
                 let tag = tags.find(tag => tag.id === newTagWithId.id);
                 tag.id = newTagFromServer.id;
-                //resubmit the tags with the corrected id to the state and set loading to false
-                this.setState({
-                    tags:      tags,
-                    isLoading: false,
-                });
-            }
-            //if the id does match just set the loading to false
-            else {
-                //set loading to false
+                this.setState({tags: tags, isLoading: false});
+            } else {
                 this.setState({isLoading: false});
             }
-            //set the alert in the AlertContext
-            this.context.setAlert(alert);
+            //CHECK IF SERVER DATA MATCHES CLIENT DATA END
+        } catch (e) {
+            //CLIENT SIDE ERROR START
+            this.context.setAlert({
+                text:  ['Something went wrong while trying to create a tag', e],
+                level: 'error',
+            });
+            this.setState({isLoading: false});
+            //CLIENT SIDE ERROR END
         }
     }
 
 
     /**
-     *
+     * Takes an array of tags and finds the highest number of the id's, adds +1 to it and returns that
      * @param {[]} [array=this.state.tags] - array of tags
      * @returns {number} - new id
      */
@@ -96,109 +92,121 @@ class TagContextProvider extends React.Component {
         return max + 1;
     }
 
-
     /**
-     * read
-     * gets all tags from the database
+     * Gets all tags from the database
      * @returns {Promise<void>}
      */
     async read() {
-        //abort if already loading
-        if (this.state.isLoading) return;
-        //set loading to true and try:
-        this.setState({isLoading: true});
         try {
-            //await response and set the state
-            const r = await axios.get('/api/tag/read', {timeout: 10000});
-            this.setState({
-                tags:      r.data,
-                isLoading: false,
-            });
+            if (this.state.isLoading) return;
+            else this.setState({isLoading: true});
+
+            //REQUEST START
+            const r = await axios.get('/api/tag/read', {timeout: 5000});
+            //REQUEST END
+
+            //HANDLE REQUEST START
+            this.setState({tags: r.data, isLoading: false});
+            //HANDLE REQUEST END
+
         } catch (e) {
-            //on timeout
+            //CLIENT SIDE ERROR START
             this.context.setAlert({
-                text:  ['Something went wrong while trying to reach the database.', e],
+                text:  ['Something went wrong while trying to get tags from the database.', e],
                 level: 'error',
             });
-
-            //set state of tags to empty array to avoid more reads and set loading to false
-            this.setState({
-                tags:      [],
-                isLoading: false,
-            });
-        }
-    };
-
-    /**
-     * UPDATE
-     * updates a tag by replacing the name key of the tag object
-     * @param {object} data
-     * @param {number} data.id
-     * @param {string} data.name
-     * @returns {Promise<void>}
-     */
-    async update(data) {
-        //abort if already loading
-        if (this.state.isLoading) return;
-        this.setState({isLoading: true});
-        try {
-            const tags = [...this.state.tags];
-            let tag = tags.find(tag => tag.id === data.id);
-
-            if (tag.name !== data.name) {
-                if (this.state.isLoading) return;
-                this.setState({isLoading: true});
-                const r = await axios.put('/api/tag/update/' + tag.id, tag);
-                this.setState({isLoading: false});
-            }
-
-        } catch (e) {
-            this.setState({
-                error:     e,
-                isLoading: false,
-            });
+            this.setState({isLoading: false, tags: []});
+            //CLIENT SIDE ERROR END
         }
     }
 
     /**
-     * DELETE
-     * removes a tag from the state, in case it could not be removed from the database: undo
-     * @param data {object}
-     * @param data.id {number}
-     * @param data.name {string}
+     * Updates a tag by replacing the name key of the tag object
+     * @param {object} originalTag
+     * @param {number} originalTag.id
+     * @param {string} originalTag.name
+     * @returns {Promise<void>}
      */
-    async delete(data) {
+    async update(originalTag) {
         try {
-            //abort if loading
             if (this.state.isLoading) return;
-            //set loading to true, copy the state and filter out the tag that needs to be removed, then replace the
-            // state
-            this.setState({isLoading: true});
-            const tags = [...this.state.tags];
-            const newTags = tags.filter(tag => tag.id !== data.id);
-            this.setState({
-                tags:      newTags,
-                isLoading: false,
-            });
+            else this.setState({isLoading: true});
 
-            //await response and see if there is an alert attached to the response data or if the level of the alert
-            // was anything but success
-            const r = await axios.delete('/api/tag/delete/' + data.id, {timeout: 10000});
+            //PREPARATION START
+            const initialTags = [...this.state.tags];
+            let newTag = [...initialTags].find(tag => tag.id === originalTag.id);
 
-            if (r.data.message === undefined || r.data.alert.level !== 'success') {
-                this.setState({
-                    tags:      tags,
-                    alert:     r.data.alert,
-                    isLoading: false,
-                });
+            if (newTag.name === originalTag.name) {
+                this.context.setAlert({text: 'There was no change to the tag', level: 'info'});
+                this.setState({isLoading: false});
+                return;
             }
+            //PREPARATION END
+
+            //REQUEST START
+            const r = await axios.put('/api/tag/update/' + originalTag.id, newTag, {timeout: 5000});
+            const {alert} = r.data;
+            this.context.setAlert(alert);
+            //REQUEST END
+
+            //SERVER SIDE ERROR START
+            if (alert.level !== 'success') {
+                this.setState({tags: initialTags, isLoading: false});
+            } else this.setState({isLoading: false});
+            //SERVER SIDE ERROR END
 
 
         } catch (e) {
+            //CLIENT SIDE ERROR START
+            this.context.setAlert({
+                text:  ['Something went wrong while trying to update the tag.', e],
+                level: 'error',
+            });
+            this.setState({isLoading: false});
+            //CLIENT SIDE ERROR END
+        }
+    }
+
+    /**
+     * Removes a tag from the state, in case it could not be removed from the database: undo
+     * @param {object} tag
+     * @param {number} tag.id
+     * @param {string} tag.name
+     */
+    async delete(tag) {
+        try {
+            if (this.state.isLoading) return;
+            else this.setState({isLoading: true});
+
+            //PREPARATION START
+            const initialTags = [...this.state.tags];
+            const filteredTags = initialTags.filter(initialTag => initialTag.id !== tag.id);
             this.setState({
-                alert:     e,
+                tags:      filteredTags,
                 isLoading: false,
             });
+            //PREPARATION END
+
+            //REQUEST START
+            const r = await axios.delete('/api/tag/delete/' + tag.id, {timeout: 5000});
+            const {alert} = r.data;
+            this.context.setAlert(alert);
+            //REQUEST END
+
+            //SERVER SIDE ERROR START
+            if (alert.level !== 'success') {
+                this.setState({tags: initialTags, isLoading: false});
+            } else this.setState({isLoading: false});
+            //SERVER SIDE ERROR END
+
+        } catch (e) {
+            //CLIENT SIDE ERROR START
+            this.context.setAlert({
+                text:  ['Something went wrong while trying to delete the tag.', e],
+                level: 'error',
+            });
+            this.setState({isLoading: false});
+            //CLIENT SIDE ERROR END
         }
     }
 
