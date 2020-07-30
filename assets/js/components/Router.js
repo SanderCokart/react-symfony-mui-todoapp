@@ -9,10 +9,10 @@ import Redirect from 'react-router-dom/Redirect';
 import {makeStyles} from '@material-ui/core/styles';
 //CUSTOM COMPONENTS
 import NotFound from './NotFound';
-import AppSnackbar from './AppSnackbar';
+import AppSnackbar from './CRUDS/todo/AppSnackbar';
 import Navigation from './Navigation';
-import TodoTable from './TodoTable';
-import TagTable from './tables/tag/TagTable';
+import TodoTable from './CRUDS/todo/TodoTable';
+import TagTable from './CRUDS/tag/TagTable';
 import Providers from '../contexts/Providers';
 import AlertComponent from './alert/AlertComponent';
 

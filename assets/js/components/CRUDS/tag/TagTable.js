@@ -86,7 +86,7 @@ const TagTable = () => {
                                         <IconButton color="inherit" onClick={() => setEdit(tag)}>
                                             <EditIcon/>
                                         </IconButton>
-                                        <DeleteButton entity={tag}/>
+                                        <DeleteButton deleteFunction={context.delete} entity={tag}/>
                                     </>
                                     :
                                     <>

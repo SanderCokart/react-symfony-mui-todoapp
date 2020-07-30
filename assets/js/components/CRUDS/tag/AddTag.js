@@ -14,8 +14,14 @@ const AddTag = () => {
     const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
 
     const initialState = {
-        name: '',
+        name: ''
     };
+
+    const keys = [['name', '']];
+    const object = Object.fromEntries(keys);
+
+    console.log(keys[0][0]);
+
 
     const [state, setState] = useState(initialState);
 

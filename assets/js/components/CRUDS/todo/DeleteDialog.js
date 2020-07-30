@@ -5,7 +5,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import PropTypes from 'prop-types';
 import React, {useContext} from 'react';
-import {TodoContext} from '../contexts/TodoContext';
+import {TodoContext} from '../../../contexts/TodoContext';
 
 function DeleteDialog(props) {
     const context = useContext(TodoContext);

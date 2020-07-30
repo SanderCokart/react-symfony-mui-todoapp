@@ -9,11 +9,9 @@ import {Delete as DeleteIcon} from '@material-ui/icons';
 import {TagContext} from '../../../contexts/TagContext';
 
 const DeleteButton = props => {
-    const context = useContext(TagContext);
-
     const onClick = (e) => {
         e.preventDefault();
-        context.delete(props.entity);
+        props.deleteFunction(props.entity);
     };
 
     return (
@@ -24,9 +22,8 @@ const DeleteButton = props => {
 };
 
 DeleteButton.propTypes = {
-    entity: PropTypes.shape({
-        id: PropTypes.number.isRequired,
-    }).isRequired,
+    entity:         PropTypes.shape({id: PropTypes.number.isRequired}).isRequired,
+    deleteFunction: PropTypes.func.isRequired,
 };
 
 export default DeleteButton;
