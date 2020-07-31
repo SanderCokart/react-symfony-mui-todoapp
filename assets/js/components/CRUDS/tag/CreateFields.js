@@ -8,20 +8,31 @@ import {Grid, TextField, Box, IconButton, useTheme, useMediaQuery, Button} from 
 import {Add as AddIcon, Refresh as RefreshIcon} from '@material-ui/icons';
 
 
-const AddTag = () => {
+const CreateFields = () => {
     const context = useContext(TagContext);
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
+    const initialState = {};
 
-    const initialState = {
-        name: ''
-    };
+    const textFields = [
+        {name: 'name', label: 'Tag Name', type: 'text'},
+        {name: 'test', label: 'Test Name', type: 'text'},
+        {name: 'bla', label: 'Bla Name'},
+    ];
 
-    const keys = [['name', '']];
-    const object = Object.fromEntries(keys);
+    function checkType(type) {
+        switch (type) {
+            case 'text':
+                return '';
+            case 'number':
+                return 0;
+            default:
+                console.error('Unknown type given');
+                return;
+        }
+    }
 
-    console.log(keys[0][0]);
-
+    textFields.forEach(item => initialState[item.name] = item.type ? checkType(item.type) : '');
 
     const [state, setState] = useState(initialState);
 
@@ -42,18 +53,20 @@ const AddTag = () => {
         <form noValidate onSubmit={onSubmit}>
             <Box my={1}>
                 <Grid container spacing={1} alignItems="center">
-                    <Grid item xs={12} sm>
-                        <TextField variant="outlined"
-                                   size={isMobile ? 'medium' : 'small'}
-                                   type="text"
-                                   value={state.name}
-                                   label="Tag Name"
-                                   name="name"
-                                   fullWidth
-                                   autoFocus
-                                   onChange={handleChange}
-                        />
-                    </Grid>
+                    {textFields.map((item, index) => (
+                        <Grid key={item.name} item xs={12} sm>
+                            <TextField variant="outlined"
+                                       size={isMobile ? 'medium' : 'small'}
+                                       type="text"
+                                       value={state[item.name]}
+                                       label={item.label}
+                                       name={item.name}
+                                       fullWidth
+                                       autoFocus={index === 0}
+                                       onChange={handleChange}
+                            />
+                        </Grid>
+                    ))}
                     <Grid item xs={12} sm={'auto'}>
                         {isMobile ?
                             <>
@@ -89,4 +102,4 @@ const AddTag = () => {
     );
 };
 
-export default AddTag;
+export default CreateFields;

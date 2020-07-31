@@ -16,7 +16,7 @@ import {Edit as EditIcon, Done as DoneIcon, Close as CloseIcon, Refresh as Refre
 //CONTEXTS
 import {TagContext} from '../../../contexts/TagContext';
 //CUSTOM COMPONENTS
-import AddTag from './AddTag';
+import CreateFields from './CreateFields';
 import DeleteButton from './DeleteButton';
 
 
@@ -59,7 +59,7 @@ const TagTable = () => {
                 <TableHead>
                     <TableRow>
                         <TableCell colSpan={2}>
-                            <AddTag/>
+                            <CreateFields/>
                         </TableCell>
                     </TableRow>
                     <TableRow>
