@@ -52,6 +52,10 @@ const TagTable = () => {
         setState(initialState);
     };
 
+    const textFields = [
+        {name: 'name', label: 'Tag Name', type: 'text'},
+    ];
+
 
     return (
         <TableContainer component={Paper}>
@@ -59,7 +63,7 @@ const TagTable = () => {
                 <TableHead>
                     <TableRow>
                         <TableCell colSpan={2}>
-                            <CreateFields/>
+                            <CreateFields textFields={textFields}/>
                         </TableCell>
                     </TableRow>
                     <TableRow>

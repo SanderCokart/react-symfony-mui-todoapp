@@ -1,5 +1,6 @@
 //REACT
 import React, {useContext, useState} from 'react';
+import PropTypes from 'prop-types';
 //CONTEXT
 import {TagContext} from '../../../contexts/TagContext';
 //MUI COMPONENTS
@@ -7,18 +8,25 @@ import {Grid, TextField, Box, IconButton, useTheme, useMediaQuery, Button} from 
 //MUI ICONS
 import {Add as AddIcon, Refresh as RefreshIcon} from '@material-ui/icons';
 
-
-const CreateFields = () => {
+/**
+ *
+ * @param props
+ * @param {[]} props.textFields
+ * @param {string} props.textFields.name - name should match the key of an entity
+ * @param {string} props.textFields.label - any string
+ * @param {string} props.textFields.type - text | number
+ * @example [{name: 'name', label: 'label', type: 'text'}]
+ * @returns {*}
+ * @constructor
+ */
+const CreateFields = (props) => {
     const context = useContext(TagContext);
+
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
-    const initialState = {};
 
-    const textFields = [
-        {name: 'name', label: 'Tag Name', type: 'text'},
-        {name: 'test', label: 'Test Name', type: 'text'},
-        {name: 'bla', label: 'Bla Name'},
-    ];
+    const {textFields} = props;
+    const initialState = {};
 
     function checkType(type) {
         switch (type) {
@@ -100,6 +108,24 @@ const CreateFields = () => {
             </Box>
         </form>
     );
+};
+
+CreateFields.propTypes = {
+    textFields: PropTypes.arrayOf(PropTypes.shape({
+        name:  PropTypes.string,
+        label: PropTypes.string,
+        type:  PropTypes.oneOf(['text', 'number']),
+    })),
+};
+
+CreateFields.defaultProps = {
+    textFields: [
+        {
+            name:  'defaultName',
+            label: 'defaultLabel',
+            type:  'text',
+        },
+    ],
 };
 
 export default CreateFields;
