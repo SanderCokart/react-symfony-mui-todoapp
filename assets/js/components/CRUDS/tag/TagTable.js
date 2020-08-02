@@ -51,13 +51,15 @@ const TagTable = () => {
         context.resetTag(state.tag);
         setState(initialState);
     };
-
-    const textFields = [
-        {name: 'name', label: 'Tag Name', type: 'text'},
-        {name: 'name', label: 'Tag Name', type: 'text'},
-        {name: 'name', label: 'Tag Name', type: 'text'},
-        {name: 'name', label: 'Tag Name', type: 'text'},
-        {name: 'name', label: 'Tag Name', type: 'text'},
+    const createTextFields = [
+        // {name: 'test1', label: 'Tag Name'},
+        {name: 'test2', label: 'Tag Name'},
+        {name: 'test3', label: 'Tag Name'},
+        {name: 'test4', label: 'Tag Name'},
+        {name: 'test5', label: 'Tag Name'},
+        {name: 'test6', label: 'Tag Name'},
+        {name: 'test7', label: 'Tag Name'},
+        {name: 'test8', label: 'Tag Name'},
     ];
 
 
@@ -67,7 +69,7 @@ const TagTable = () => {
                 <TableHead>
                     <TableRow>
                         <TableCell colSpan={2}>
-                            <CreateFields textFields={textFields}/>
+                            <CreateFields textFields={createTextFields}/>
                         </TableCell>
                     </TableRow>
                     <TableRow>

@@ -9,10 +9,10 @@
   "license": "UNLICENSED",
   "private": true,
   "scripts": {
-    "dev-server": "encore dev-server",
-    "dev": "encore dev",
-    "watch": "encore dev --watch",
-    "build": "encore production --progress"
+    "dev-server": "startup dev-server",
+    "dev": "startup dev",
+    "watch": "startup dev --watch",
+    "build": "startup production --progress"
   },
   "dependencies": {
     "@material-ui/core": "^4.8.0",

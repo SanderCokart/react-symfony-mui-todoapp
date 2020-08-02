@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 //CONTEXT
 import {TagContext} from '../../../contexts/TagContext';
 //MUI COMPONENTS
-import {Grid, TextField, Box, IconButton, useTheme, useMediaQuery, Button} from '@material-ui/core';
+import {Grid, TextField, Box, IconButton, useTheme, useMediaQuery, Button, Modal} from '@material-ui/core';
 //MUI ICONS
 import {Add as AddIcon, Refresh as RefreshIcon} from '@material-ui/icons';
 //CUSTOM COMPONENTS
@@ -25,9 +25,9 @@ const CreateFields = (props) => {
     const context = useContext(TagContext);
 
     const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-    const initialState = {};
+    const initialState = {modalOpen: false};
 
     props.textFields.forEach(item => initialState[item.name] = item.type ? CheckType(item.type) : '');
 
@@ -46,54 +46,45 @@ const CreateFields = (props) => {
         setState(initialState);
     };
 
+    const toggleModal = () => {
+
+    };
+
     return (
         <form noValidate onSubmit={onSubmit}>
             <Box my={1}>
-                <Grid container spacing={1} alignItems="center" justify="flex-end">
-                    {props.textFields.map((item, index) => (
-                        <Grid key={item.name} item xs={12} sm={props.textFields.length > 4 ? 4 : true}>
-                            <TextField variant="outlined"
-                                       size={isMobile ? 'medium' : 'small'}
-                                       type="text"
-                                       value={state[item.name]}
-                                       label={item.label}
-                                       name={item.name}
-                                       fullWidth
-                                       autoFocus={index === 0}
-                                       onChange={handleChange}
-                            />
-                        </Grid>
-                    ))}
-                    <Grid item xs={12} sm={3}>
-                        {isMobile ?
-                            <>
-                                <Grid container spacing={1}>
-                                    <Grid item xs>
-                                        <Button fullWidth size="large" variant="contained" color="primary"
-                                                onClick={onSubmit}>
-                                            Add Tag {state.name}
-                                        </Button>
-                                    </Grid>
 
-                                    <Grid item xs>
-                                        < IconButton color='inherit' onClick={context.read}>
-                                            <RefreshIcon/>
-                                        </IconButton>
-                                    </Grid>
-                                </Grid>
-                            </>
-                            :
-                            <>
-                                <IconButton type="submit" color="primary" onClick={onSubmit}>
-                                    <AddIcon/>
-                                </IconButton>
-                                < IconButton color='inherit' onClick={context.read}>
-                                    <RefreshIcon/>
-                                </IconButton>
-                            </>
-                        }
-                    </Grid>
-                </Grid>
+                <Modal open={state.modalOpen}>
+                    {props.textFields.map((item, index) => (
+                        <TextField variant="outlined"
+                                   size={isMobile ? 'medium' : 'small'}
+                                   type={item.type}
+                                   value={state[item.name]}
+                                   label={item.label}
+                                   name={item.name}
+                                   fullWidth
+                                   autoFocus={index === 0}
+                                   onChange={handleChange}
+                        />
+                    ))}
+                </Modal>
+
+
+                {isMobile ?
+                    <Button fullWidth size="large" variant="contained" color="primary"
+                            onClick={onSubmit}>
+                        Add Tag {state.name}
+                    </Button>
+                    :
+                    <IconButton type="submit" color="primary" onClick={onSubmit}>
+                        <AddIcon/>
+                    </IconButton>
+                }
+
+                <IconButton color='inherit' onClick={context.read}>
+                    <RefreshIcon/>
+                </IconButton>
+
             </Box>
         </form>
     );
@@ -101,18 +92,20 @@ const CreateFields = (props) => {
 
 CreateFields.propTypes = {
     textFields: PropTypes.arrayOf(PropTypes.shape({
-        name:  PropTypes.string,
-        label: PropTypes.string,
-        type:  PropTypes.oneOf(['text', 'number']),
+        name:      PropTypes.string,
+        label:     PropTypes.string,
+        type:      PropTypes.oneOf(['text', 'number']),
+        multiline: PropTypes.bool,
     })),
 };
 
 CreateFields.defaultProps = {
     textFields: [
         {
-            name:  'defaultName',
-            label: 'defaultLabel',
-            type:  'text',
+            name:      'defaultName',
+            label:     'defaultLabel',
+            type:      'text',
+            multiline: false,
         },
     ],
 };
