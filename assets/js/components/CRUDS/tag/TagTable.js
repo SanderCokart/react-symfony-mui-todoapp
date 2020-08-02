@@ -54,6 +54,10 @@ const TagTable = () => {
 
     const textFields = [
         {name: 'name', label: 'Tag Name', type: 'text'},
+        {name: 'name', label: 'Tag Name', type: 'text'},
+        {name: 'name', label: 'Tag Name', type: 'text'},
+        {name: 'name', label: 'Tag Name', type: 'text'},
+        {name: 'name', label: 'Tag Name', type: 'text'},
     ];
 
 

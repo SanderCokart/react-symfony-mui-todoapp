@@ -7,6 +7,8 @@ import {TagContext} from '../../../contexts/TagContext';
 import {Grid, TextField, Box, IconButton, useTheme, useMediaQuery, Button} from '@material-ui/core';
 //MUI ICONS
 import {Add as AddIcon, Refresh as RefreshIcon} from '@material-ui/icons';
+//CUSTOM COMPONENTS
+import CheckType from '../../functions/CheckType';
 
 /**
  *
@@ -25,22 +27,9 @@ const CreateFields = (props) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
 
-    const {textFields} = props;
     const initialState = {};
 
-    function checkType(type) {
-        switch (type) {
-            case 'text':
-                return '';
-            case 'number':
-                return 0;
-            default:
-                console.error('Unknown type given');
-                return;
-        }
-    }
-
-    textFields.forEach(item => initialState[item.name] = item.type ? checkType(item.type) : '');
+    props.textFields.forEach(item => initialState[item.name] = item.type ? CheckType(item.type) : '');
 
     const [state, setState] = useState(initialState);
 
@@ -60,9 +49,9 @@ const CreateFields = (props) => {
     return (
         <form noValidate onSubmit={onSubmit}>
             <Box my={1}>
-                <Grid container spacing={1} alignItems="center">
-                    {textFields.map((item, index) => (
-                        <Grid key={item.name} item xs={12} sm>
+                <Grid container spacing={1} alignItems="center" justify="flex-end">
+                    {props.textFields.map((item, index) => (
+                        <Grid key={item.name} item xs={12} sm={props.textFields.length > 4 ? 4 : true}>
                             <TextField variant="outlined"
                                        size={isMobile ? 'medium' : 'small'}
                                        type="text"
@@ -75,7 +64,7 @@ const CreateFields = (props) => {
                             />
                         </Grid>
                     ))}
-                    <Grid item xs={12} sm={'auto'}>
+                    <Grid item xs={12} sm={3}>
                         {isMobile ?
                             <>
                                 <Grid container spacing={1}>
@@ -86,7 +75,7 @@ const CreateFields = (props) => {
                                         </Button>
                                     </Grid>
 
-                                    <Grid item xs={'auto'}>
+                                    <Grid item xs>
                                         < IconButton color='inherit' onClick={context.read}>
                                             <RefreshIcon/>
                                         </IconButton>
