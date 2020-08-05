@@ -2,17 +2,19 @@
 import React, {useContext, useEffect, useState} from 'react';
 //MUI COMPONENTS
 import {
-    Table,
-    TableHead,
-    TableBody,
-    TableRow,
-    TableCell,
-    Typography,
     IconButton,
-    TableContainer, Paper, TextField, useTheme, useMediaQuery,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    TextField,
+    Typography,
 } from '@material-ui/core';
 //MUI ICONS
-import {Edit as EditIcon, Done as DoneIcon, Close as CloseIcon, Refresh as RefreshIcon} from '@material-ui/icons';
+import {Close as CloseIcon, Done as DoneIcon, Edit as EditIcon} from '@material-ui/icons';
 //CONTEXTS
 import {TagContext} from '../../../contexts/TagContext';
 //CUSTOM COMPONENTS
@@ -52,14 +54,7 @@ const TagTable = () => {
         setState(initialState);
     };
     const createTextFields = [
-        // {name: 'test1', label: 'Tag Name'},
-        {name: 'test2', label: 'Tag Name'},
-        {name: 'test3', label: 'Tag Name'},
-        {name: 'test4', label: 'Tag Name'},
-        {name: 'test5', label: 'Tag Name'},
-        {name: 'test6', label: 'Tag Name'},
-        {name: 'test7', label: 'Tag Name'},
-        {name: 'test8', label: 'Tag Name'},
+        {name: 'name', label: 'Tag Name'},
     ];
 
 
@@ -69,7 +64,7 @@ const TagTable = () => {
                 <TableHead>
                     <TableRow>
                         <TableCell colSpan={2}>
-                            <CreateFields textFields={createTextFields}/>
+                            <CreateFields textFields={createTextFields} entityName="tag"/>
                         </TableCell>
                     </TableRow>
                     <TableRow>

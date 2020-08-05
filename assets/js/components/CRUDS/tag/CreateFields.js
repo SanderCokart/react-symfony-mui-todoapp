@@ -4,9 +4,26 @@ import PropTypes from 'prop-types';
 //CONTEXT
 import {TagContext} from '../../../contexts/TagContext';
 //MUI COMPONENTS
-import {Grid, TextField, Box, IconButton, useTheme, useMediaQuery, Button, Modal} from '@material-ui/core';
+import {
+    AppBar,
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    Grid,
+    IconButton,
+    List,
+    ListItem,
+    makeStyles,
+    Slide,
+    TextField,
+    Toolbar,
+    Typography,
+    useMediaQuery,
+    useTheme,
+} from '@material-ui/core';
 //MUI ICONS
-import {Add as AddIcon, Refresh as RefreshIcon} from '@material-ui/icons';
+import {Close as CloseIcon, Refresh as RefreshIcon} from '@material-ui/icons';
 //CUSTOM COMPONENTS
 import CheckType from '../../functions/CheckType';
 
@@ -22,92 +39,121 @@ import CheckType from '../../functions/CheckType';
  * @constructor
  */
 const CreateFields = (props) => {
+    //HOOKS START
     const context = useContext(TagContext);
-
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const classes = useStyles();
+    //HOOKS END
 
-    const initialState = {modalOpen: false};
-
+    //STATE START
+    const initialState = {dialogIsOpen: false, errors: null};
     props.textFields.forEach(item => initialState[item.name] = item.type ? CheckType(item.type) : '');
-
     const [state, setState] = useState(initialState);
+    //STATE END
 
+    //FUNCTIONS START
     const handleChange = (e) => {
-        setState({
-            ...state,
-            [e.target.name]: e.target.value,
-        });
+        setState({...state, [e.target.name]: e.target.value});
     };
 
     const onSubmit = (e) => {
         e.preventDefault();
-        context.create(state);
+        const entity = {};
+        props.textFields.forEach(item => [entity[item.name] = state[item.name]]);
+
+        context.create(entity);
         setState(initialState);
     };
 
-    const toggleModal = () => {
-
+    const toggleCreateDialog = () => {
+        setState({...state, dialogIsOpen: !state.dialogIsOpen});
     };
+    //FUNCTIONS END
 
     return (
-        <form noValidate onSubmit={onSubmit}>
-            <Box my={1}>
+        <>
+            <Grid container alignItems="center" spacing={1}>
+                <Grid item xs>
+                    <Button size="large" variant="contained" color="primary" fullWidth
+                            onClick={toggleCreateDialog}>Create</Button>
+                </Grid>
+                <Grid item>
+                    <IconButton color="inherit"><RefreshIcon/></IconButton>
+                </Grid>
+            </Grid>
 
-                <Modal open={state.modalOpen}>
-                    {props.textFields.map((item, index) => (
-                        <TextField variant="outlined"
-                                   size={isMobile ? 'medium' : 'small'}
-                                   type={item.type}
-                                   value={state[item.name]}
-                                   label={item.label}
-                                   name={item.name}
-                                   fullWidth
-                                   autoFocus={index === 0}
-                                   onChange={handleChange}
-                        />
-                    ))}
-                </Modal>
+            <Dialog fullScreen={isMobile} fullWidth open={state.dialogIsOpen} onClose={toggleCreateDialog}
+                    TransitionComponent={Transition}>
+                <AppBar className={classes.appBar}>
+                    <Toolbar>
+                        <IconButton edge="start" color="inherit" onClick={toggleCreateDialog}>
+                            <CloseIcon/>
+                        </IconButton>
+                        <Typography variant="h6" component="h2" className={classes.title}>
+                            Create {props.entityName}
+                        </Typography>
+                        <Button size="large" type="submit" color="inherit" onClick={onSubmit}>
+                            Save / Submit
+                        </Button>
+                    </Toolbar>
+                </AppBar>
 
+                <form noValidate onSubmit={onSubmit}>
+                    <DialogContent>
+                        <List>
+                            {props.textFields.map((item, index) => (
+                                <ListItem key={item.name}>
+                                    <TextField variant="outlined"
+                                               size={isMobile ? 'medium' : 'small'}
+                                               type={item.type}
+                                               value={state[item.name]}
+                                               label={item.label}
+                                               name={item.name}
+                                               fullWidth
+                                               autoFocus={index === 0}
+                                               onChange={handleChange}
+                                    />
+                                </ListItem>
+                            ))}
+                        </List>
+                    </DialogContent>
 
-                {isMobile ?
-                    <Button fullWidth size="large" variant="contained" color="primary"
-                            onClick={onSubmit}>
-                        Add Tag {state.name}
-                    </Button>
-                    :
-                    <IconButton type="submit" color="primary" onClick={onSubmit}>
-                        <AddIcon/>
-                    </IconButton>
-                }
+                    <DialogActions style={{display: 'none'}}>
+                        <Button type="submit"/>
+                    </DialogActions>
+                </form>
 
-                <IconButton color='inherit' onClick={context.read}>
-                    <RefreshIcon/>
-                </IconButton>
-
-            </Box>
-        </form>
+            </Dialog>
+        </>
     );
 };
 
+//EXTRA COMPONENTS
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
+
+//STYLES
+const useStyles = makeStyles((theme) => ({
+    appBar: {
+        position: 'relative',
+    },
+    title:  {
+        marginLeft: theme.spacing(2),
+        flex:       1,
+    },
+}));
+
+//PROPTYPES
 CreateFields.propTypes = {
     textFields: PropTypes.arrayOf(PropTypes.shape({
         name:      PropTypes.string,
         label:     PropTypes.string,
         type:      PropTypes.oneOf(['text', 'number']),
         multiline: PropTypes.bool,
-    })),
-};
-
-CreateFields.defaultProps = {
-    textFields: [
-        {
-            name:      'defaultName',
-            label:     'defaultLabel',
-            type:      'text',
-            multiline: false,
-        },
-    ],
+    })).isRequired,
+    entityName: PropTypes.string.isRequired,
 };
 
 export default CreateFields;
