@@ -1,7 +1,7 @@
 //REACT
 import React from 'react';
 //MUI COMPONENTS
-import {Box, Typography, Button} from '@material-ui/core/';
+import {Box, Button, Typography} from '@material-ui/core/';
 import {Link} from 'react-router-dom';
 
 const NotFound = () => {

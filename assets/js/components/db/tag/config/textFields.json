@@ -1,0 +1,8 @@
+[
+  {
+    "name": "name",
+    "label": "Tag Name",
+    "multiline": false,
+    "required": true
+  }
+]

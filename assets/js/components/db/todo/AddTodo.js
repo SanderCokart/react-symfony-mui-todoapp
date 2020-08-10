@@ -3,7 +3,7 @@ import Grid from '@material-ui/core/Grid';
 import {IconButton, TextField} from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 import {Add as AddIcon} from '@material-ui/icons';
-import {TodoContext} from '../../../contexts/TodoContext';
+import {TodoContext} from '../../providers/TodoContext';
 
 const AddTodo = () => {
     const context = useContext(TodoContext);

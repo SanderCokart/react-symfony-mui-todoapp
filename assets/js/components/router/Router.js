@@ -6,22 +6,15 @@ import Route from 'react-router-dom/Route';
 import Switch from 'react-router-dom/Switch';
 import Redirect from 'react-router-dom/Redirect';
 //MUI COMPONENTS
-import {makeStyles} from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core';
 //CUSTOM COMPONENTS
-import NotFound from './NotFound';
-import AppSnackbar from './CRUDS/todo/AppSnackbar';
 import Navigation from './Navigation';
-import TodoTable from './CRUDS/todo/TodoTable';
-import TagTable from './CRUDS/tag/TagTable';
-import Providers from '../contexts/Providers';
-import AlertComponent from './alert/AlertComponent';
-
-const TodoList = () => (
-    <div>
-        <AppSnackbar/>
-        <TodoTable/>
-    </div>
-);
+import Providers from '../providers/Providers';
+import AlertComponent from '../modals/AlertComponent';
+//PAGES
+import NotFound from '../pages/NotFound';
+import CrudTodo from '../pages/CrudTodo';
+import CrudTag from '../pages/CrudTag';
 
 const useStyles = makeStyles(theme => ({
     divider: theme.mixins.toolbar,
@@ -36,8 +29,8 @@ const Router = () => {
                 <div className={classes.divider}/>
                 <Switch>
                     <Redirect exact from="/" to="/todo-list"/>
-                    <Route exact path="/todo-list" component={TodoList}/>
-                    <Route exact path="/tag-list" component={TagTable}/>
+                    <Route exact path="/todo-list" component={CrudTodo}/>
+                    <Route exact path="/tag-list" component={CrudTag}/>
                     <Route component={NotFound}/>
                 </Switch>
                 <AlertComponent/>

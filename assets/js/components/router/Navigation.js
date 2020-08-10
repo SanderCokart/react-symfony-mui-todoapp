@@ -4,20 +4,20 @@ import {Link} from 'react-router-dom';
 //MUI COMPONENTS
 import {
     AppBar,
-    Toolbar,
-    IconButton,
     Box,
     Button,
     Drawer,
+    IconButton,
     List,
     ListItem,
-    Typography,
-    ListItemText,
     ListItemIcon,
+    ListItemText,
     makeStyles,
+    Toolbar,
+    Typography,
 } from '@material-ui/core';
 //MUI ICONS
-import {Menu as MenuIcon, List as ListIcon, Label as LabelIcon} from '@material-ui/icons';
+import {Label as LabelIcon, List as ListIcon, Menu as MenuIcon} from '@material-ui/icons';
 
 const useStyles = makeStyles(theme => ({
     menuIcon: {

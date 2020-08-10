@@ -1,9 +1,8 @@
 import React, {useContext} from 'react';
 import {Snackbar} from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
-import {AlertContext} from '../../contexts/AlertContext';
+import {AlertContext} from '../providers/AlertContext';
 import Typography from '@material-ui/core/Typography';
-import ExtractTextFromMessage from '../functions/ExtractTextFromMessage';
 
 const AlertComponent = () => {
     const context = useContext(AlertContext);

@@ -1,0 +1,11 @@
+{
+  "name": {
+    "presence": {
+      "allowEmpty": false
+    },
+    "length": {
+      "minimum": 2,
+      "maximum": 50
+    }
+  }
+}

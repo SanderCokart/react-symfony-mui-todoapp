@@ -1,25 +1,21 @@
 //REACT
 import React, {Fragment, useContext, useState} from 'react';
 //CONTEXT
-import {TodoContext} from '../../../contexts/TodoContext';
+import {TodoContext} from '../../providers/TodoContext';
 //MUI COMPONENTS
 import {
-    makeStyles,
-    Typography,
     IconButton,
+    makeStyles,
     Table,
     TableBody,
     TableCell,
     TableHead,
     TableRow,
     TextField,
+    Typography,
 } from '@material-ui/core';
 //MUI ICONS
-import {
-    Close as CloseIcon,
-    Done as DoneIcon,
-    Edit as EditIcon,
-} from '@material-ui/icons';
+import {Close as CloseIcon, Done as DoneIcon, Edit as EditIcon} from '@material-ui/icons';
 //CUSTOM COMPONENTS
 import DeleteDialog from './DeleteDialog';
 import AddTodo from './AddTodo';
@@ -82,7 +78,7 @@ function TodoTable() {
                 {/*BODY*/}
                 <TableBody>
                     {/*DATA*/}
-                    {context.todos.slice().reverse().map((todo, index) => (
+                    {context.todos.slice().reverse().map((todo) => (
                         <TableRow key={todo.id}>
 
                             {/*TASK*/}

@@ -1,0 +1,28 @@
+{
+  "title": "constraints schema",
+  "type": "object",
+  "additionalProperties": {
+    "type": "object",
+    "properties": {
+      "presence": {
+        "type": "object",
+        "properties": {
+          "allowEmpty": {
+            "type": "boolean"
+          }
+        }
+      },
+      "length": {
+        "type": "object",
+        "properties": {
+          "minimum": {
+            "type": "number"
+          },
+          "maximum": {
+            "type": "number"
+          }
+        }
+      }
+    }
+  }
+}

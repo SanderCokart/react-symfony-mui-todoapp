@@ -1,0 +1,21 @@
+{
+  "title": "textFields schema",
+  "type": "array",
+  "additionalItems": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string"
+      },
+      "label": {
+        "type": "string"
+      },
+      "required": {
+        "type": "boolean"
+      },
+      "multiline": {
+        "type": "boolean"
+      }
+    }
+  }
+}

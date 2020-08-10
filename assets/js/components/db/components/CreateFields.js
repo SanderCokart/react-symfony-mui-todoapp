@@ -1,8 +1,6 @@
 //REACT
-import React, {useContext, useState} from 'react';
+import React, {useState} from 'react';
 import PropTypes from 'prop-types';
-//CONTEXT
-import {TagContext} from '../../../contexts/TagContext';
 //MUI COMPONENTS
 import {
     AppBar,
@@ -10,7 +8,6 @@ import {
     Dialog,
     DialogActions,
     DialogContent,
-    Grid,
     IconButton,
     List,
     ListItem,
@@ -23,24 +20,14 @@ import {
     useTheme,
 } from '@material-ui/core';
 //MUI ICONS
-import {Close as CloseIcon, Refresh as RefreshIcon} from '@material-ui/icons';
+import {Add as AddIcon, Close as CloseIcon} from '@material-ui/icons';
 //CUSTOM COMPONENTS
-import CheckType from '../../functions/CheckType';
+import CheckType from '../../../functions/CheckType';
+//LIBRARIES
+import validator from 'validate.js';
 
-/**
- *
- * @param props
- * @param {[]} props.textFields
- * @param {string} props.textFields.name - name should match the key of an entity
- * @param {string} props.textFields.label - any string
- * @param {string} props.textFields.type - text | number
- * @example [{name: 'name', label: 'label', type: 'text'}]
- * @returns {*}
- * @constructor
- */
-const CreateFields = (props) => {
+const CreateFields = ({textFields, constraints, createFunction, entityName}) => {
     //HOOKS START
-    const context = useContext(TagContext);
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const classes = useStyles();
@@ -48,7 +35,7 @@ const CreateFields = (props) => {
 
     //STATE START
     const initialState = {dialogIsOpen: false, errors: null};
-    props.textFields.forEach(item => initialState[item.name] = item.type ? CheckType(item.type) : '');
+    textFields.forEach(item => initialState[item.name] = item.type ? CheckType(item.type) : '');
     const [state, setState] = useState(initialState);
     //STATE END
 
@@ -60,11 +47,21 @@ const CreateFields = (props) => {
     const onSubmit = (e) => {
         e.preventDefault();
         const entity = {};
-        props.textFields.forEach(item => [entity[item.name] = state[item.name]]);
 
-        context.create(entity);
-        setState(initialState);
+        textFields.forEach(item => {
+            return entity[item.name] = state[item.name];
+        });
+
+        let errors = validator.validate(entity, constraints);
+
+        if (validator.isEmpty(errors)) {
+            createFunction(entity);
+            setState(initialState);
+        } else {
+            setState({...state, errors: errors});
+        }
     };
+
 
     const toggleCreateDialog = () => {
         setState({...state, dialogIsOpen: !state.dialogIsOpen});
@@ -73,28 +70,29 @@ const CreateFields = (props) => {
 
     return (
         <>
-            <Grid container alignItems="center" spacing={1}>
-                <Grid item xs>
-                    <Button size="large" variant="contained" color="primary" fullWidth
-                            onClick={toggleCreateDialog}>Create</Button>
-                </Grid>
-                <Grid item>
-                    <IconButton color="inherit"><RefreshIcon/></IconButton>
-                </Grid>
-            </Grid>
+            {isMobile ?
+                <Button size="large" variant="contained"
+                        color="primary" fullWidth
+                        onClick={toggleCreateDialog}>Create {entityName}</Button>
+                :
+                <IconButton onClick={toggleCreateDialog}
+                            color="primary"><AddIcon/></IconButton>
+            }
+
 
             <Dialog fullScreen={isMobile} fullWidth open={state.dialogIsOpen} onClose={toggleCreateDialog}
                     TransitionComponent={Transition}>
                 <AppBar className={classes.appBar}>
                     <Toolbar>
-                        <IconButton edge="start" color="inherit" onClick={toggleCreateDialog}>
+                        <IconButton edge="start" color="inherit"
+                                    onClick={toggleCreateDialog}>
                             <CloseIcon/>
                         </IconButton>
                         <Typography variant="h6" component="h2" className={classes.title}>
-                            Create {props.entityName}
+                            Create {entityName}
                         </Typography>
                         <Button size="large" type="submit" color="inherit" onClick={onSubmit}>
-                            Save / Submit
+                            Create
                         </Button>
                     </Toolbar>
                 </AppBar>
@@ -102,7 +100,7 @@ const CreateFields = (props) => {
                 <form noValidate onSubmit={onSubmit}>
                     <DialogContent>
                         <List>
-                            {props.textFields.map((item, index) => (
+                            {textFields.map((item, index) => (
                                 <ListItem key={item.name}>
                                     <TextField variant="outlined"
                                                size={isMobile ? 'medium' : 'small'}
@@ -110,7 +108,11 @@ const CreateFields = (props) => {
                                                value={state[item.name]}
                                                label={item.label}
                                                name={item.name}
+                                               multiline={item.multiline}
                                                fullWidth
+                                               required={item.required}
+                                               helperText={state.errors ? state.errors[item.name].join('\n') : null}
+                                               FormHelperTextProps={{style: {whiteSpace: 'pre'}}}
                                                autoFocus={index === 0}
                                                onChange={handleChange}
                                     />
@@ -123,7 +125,6 @@ const CreateFields = (props) => {
                         <Button type="submit"/>
                     </DialogActions>
                 </form>
-
             </Dialog>
         </>
     );
@@ -147,13 +148,23 @@ const useStyles = makeStyles((theme) => ({
 
 //PROPTYPES
 CreateFields.propTypes = {
-    textFields: PropTypes.arrayOf(PropTypes.shape({
-        name:      PropTypes.string,
+    entityName:     PropTypes.string,
+    textFields:     PropTypes.arrayOf(PropTypes.shape({
+        name:      PropTypes.string.isRequired,
         label:     PropTypes.string,
-        type:      PropTypes.oneOf(['text', 'number']),
+        required:  PropTypes.bool,
         multiline: PropTypes.bool,
+        type:      PropTypes.oneOf(['text', 'number']),
     })).isRequired,
-    entityName: PropTypes.string.isRequired,
+    constraints:    PropTypes.objectOf(PropTypes.shape(
+        {
+            presence: PropTypes.shape(
+                {allowEmpty: PropTypes.bool}),
+            length:   PropTypes.shape(
+                {minimum: PropTypes.number, maximum: PropTypes.number},
+            ),
+        })),
+    createFunction: PropTypes.func.isRequired,
 };
 
 export default CreateFields;
