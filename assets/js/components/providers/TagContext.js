@@ -27,6 +27,8 @@ class TagContextProvider extends React.Component {
         };
     }
 
+    //TODO check the resets for when delete and update go wrong. Check the errors as well.
+
     /**
      * Creates a new tag object with a temporary id, puts it in the state, submits the data, check to see if the id
      * matches, if it doesn't match replace it
@@ -34,18 +36,20 @@ class TagContextProvider extends React.Component {
      * @param {string} tag.name - name of the tag
      */
     async create(tag) {
-        try {
-            if (this.state.isLoading) return;
-            else this.setState({isLoading: true});
+        //PREPARATION START
+        if (this.state.isLoading) return;
+        this.setState({isLoading: true});
+        const initialTags = [...this.state.tags];
+        //PREPARATION END
 
-            //PREPARATION START
-            const initialTags = [...this.state.tags];
+        try {
+            //TEMPORARY ID START
             const newTagWithId = {...tag, id: this.findHighestId()};
             this.setState({tags: [...initialTags, newTagWithId], isLoading: true});
-            //PREPARATION END
+            //TEMPORARY ID END
 
             //REQUEST START
-            const r = await axios.post('/api/tag/create', tag, {timeout: 5000});
+            const r = await axios.post('/api/tag/create', tag);
             const {alert, tag: newTagFromServer} = r.data;
             this.context.setAlert(alert);
             //REQUEST END
@@ -70,10 +74,14 @@ class TagContextProvider extends React.Component {
         } catch (e) {
             //CLIENT SIDE ERROR START
             this.context.setAlert({
-                text:  ['Something went wrong while trying to create a tag', e],
+                text:  [
+                    e,
+                    'Something went wrong while trying to create a tag.',
+                    'Check your internet connection to make sure you didn\'t lose it, alternatively our servers may be down for maintenance.',
+                ],
                 level: 'error',
             });
-            this.setState({isLoading: false});
+            this.setState({tags: initialTags, isLoading: false});
             //CLIENT SIDE ERROR END
         }
     }
@@ -97,12 +105,15 @@ class TagContextProvider extends React.Component {
      * @returns {Promise<void>}
      */
     async read() {
+        //PREPARATION START
+        if (this.state.isLoading) return;
+        this.setState({isLoading: true});
+        //PREPARATION END
+
         try {
-            if (this.state.isLoading) return;
-            else this.setState({isLoading: true});
 
             //REQUEST START
-            const r = await axios.get('/api/tag/read', {timeout: 5000});
+            const r = await axios.get('/api/tag/read');
             //REQUEST END
 
             //HANDLE REQUEST START
@@ -112,7 +123,11 @@ class TagContextProvider extends React.Component {
         } catch (e) {
             //CLIENT SIDE ERROR START
             this.context.setAlert({
-                text:  ['Something went wrong while trying to get tags from the database.', e],
+                text:  [
+                    e,
+                    'Something went wrong while trying to create a tag.',
+                    'Check your internet connection to make sure you didn\'t lose it, alternatively our servers may be down for maintenance.',
+                ],
                 level: 'error',
             });
             this.setState({isLoading: false, tags: []});
@@ -128,12 +143,14 @@ class TagContextProvider extends React.Component {
      * @returns {Promise<void>}
      */
     async update(originalTag) {
-        try {
-            if (this.state.isLoading) return;
-            else this.setState({isLoading: true});
+        //PREPARATION START
+        if (this.state.isLoading) return;
+        this.setState({isLoading: true});
+        const initialTags = [...this.state.tags];
+        //PREPARATION END
 
-            //PREPARATION START
-            const initialTags = [...this.state.tags];
+        try {
+            //UPDATE CLIENT START
             let newTag = [...initialTags].find(tag => tag.id === originalTag.id);
 
             if (newTag.name === originalTag.name) {
@@ -141,10 +158,10 @@ class TagContextProvider extends React.Component {
                 this.setState({isLoading: false});
                 return;
             }
-            //PREPARATION END
+            //UPDATE CLIENT END
 
             //REQUEST START
-            const r = await axios.put('/api/tag/update/' + originalTag.id, newTag, {timeout: 5000});
+            const r = await axios.put('/api/tag/update/' + originalTag.id, newTag);
             const {alert} = r.data;
             this.context.setAlert(alert);
             //REQUEST END
@@ -174,21 +191,21 @@ class TagContextProvider extends React.Component {
      * @param {string} tag.name
      */
     async delete(tag) {
-        try {
-            if (this.state.isLoading) return;
-            else this.setState({isLoading: true});
+        //PREPARATION START
+        if (this.state.isLoading) return;
+        this.setState({isLoading: true});
+        //PREPARATION END
 
-            //PREPARATION START
+        try {
             const initialTags = [...this.state.tags];
             const filteredTags = initialTags.filter(initialTag => initialTag.id !== tag.id);
             this.setState({
                 tags:      filteredTags,
                 isLoading: false,
             });
-            //PREPARATION END
 
             //REQUEST START
-            const r = await axios.delete('/api/tag/delete/' + tag.id, {timeout: 5000});
+            const r = await axios.delete('/api/tag/delete/' + tag.id);
             const {alert} = r.data;
             this.context.setAlert(alert);
             //REQUEST END

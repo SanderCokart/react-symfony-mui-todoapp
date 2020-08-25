@@ -13,6 +13,8 @@ import {
     TableRow,
     TextField,
     Typography,
+    useMediaQuery,
+    useTheme,
 } from '@material-ui/core';
 //MUI ICONS
 import {Close as CloseIcon, Done as DoneIcon, Edit as EditIcon, Refresh as RefreshIcon} from '@material-ui/icons';
@@ -29,6 +31,8 @@ const TagTable = () => {
           //HOOKS START
           const context = useContext(TagContext);
           const {tags} = context;
+          const theme = useTheme();
+          const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
           //HOOKS END
 
           //STATE START
@@ -67,7 +71,7 @@ const TagTable = () => {
                           <TableRow>
                               <TableCell colSpan={2}>
                                   <Grid container justify="flex-end" alignItems="center">
-                                      <Grid item>
+                                      <Grid item xs={isMobile}>
                                           <CreateFields entityName="tag" textFields={textFields} constraints={constraints}
                                                         createFunction={context.create}/>
                                       </Grid>

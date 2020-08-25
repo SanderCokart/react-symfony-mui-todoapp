@@ -1,8 +1,8 @@
 import React, {useContext} from 'react';
-import {Snackbar} from '@material-ui/core';
+import {IconButton, Snackbar, Typography} from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
 import {AlertContext} from '../providers/AlertContext';
-import Typography from '@material-ui/core/Typography';
+import {Close as CloseIcon} from '@material-ui/icons';
 
 const AlertComponent = () => {
     const context = useContext(AlertContext);
@@ -10,12 +10,15 @@ const AlertComponent = () => {
 
     if (text && level)
         return (
-            <Snackbar color="primary" anchorOrigin={{vertical: 'bottom', horizontal: 'left'}} autoHideDuration={5000}
+            <Snackbar color="primary" anchorOrigin={{vertical: 'bottom', horizontal: 'left'}}
                       open={context.open}
                       onClose={context.close}>
                 <MuiAlert variant="filled"
-                          severity={level}>
-                    <Typography style={{whiteSpace: 'pre'}}>{typeof text !== 'string' ? text.join('\n') : text}</Typography>
+                          severity={level}
+                          action={<IconButton onClick={context.close}><CloseIcon/></IconButton>}>
+                    <Typography style={{whiteSpace: 'pre-wrap'}}>{typeof text !== 'string'
+                        ? text.join('\n')
+                        : text}</Typography>
                 </MuiAlert>
             </Snackbar>
         );
