@@ -193,16 +193,15 @@ class TagContextProvider extends React.Component {
     async delete(tag) {
         //PREPARATION START
         if (this.state.isLoading) return;
-        this.setState({isLoading: true});
+        await this.setState({isLoading: true});
+        const initialTags = [...this.state.tags];
         //PREPARATION END
 
         try {
-            const initialTags = [...this.state.tags];
-            const filteredTags = initialTags.filter(initialTag => initialTag.id !== tag.id);
-            this.setState({
-                tags:      filteredTags,
-                isLoading: false,
-            });
+            //UPDATE CLIENT START
+            const filteredTags = [...initialTags].filter(initialTag => initialTag.id !== tag.id);
+            this.setState({tags: filteredTags});
+            //UPDATE CLIENT END
 
             //REQUEST START
             const r = await axios.delete('/api/tag/delete/' + tag.id);
@@ -222,7 +221,7 @@ class TagContextProvider extends React.Component {
                 text:  ['Something went wrong while trying to delete the tag.', e],
                 level: 'error',
             });
-            this.setState({isLoading: false});
+            this.setState({isLoading: false, tags: initialTags});
             //CLIENT SIDE ERROR END
         }
     }
