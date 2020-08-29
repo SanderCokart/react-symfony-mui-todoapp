@@ -43,13 +43,8 @@ class TagController extends AbstractController
      */
     public function read()
     {
-        $oldTags = $this->tagRepository->findAll();
-        $newTags = [];
-
-        foreach ($oldTags as $tag) {
-            $newTags[] = $tag->normalize();
-        }
-        return $this->json($newTags);
+        $tags = $this->tagRepository->findAllSortById();
+        return $this->json($tags);
     }
 
     /**
@@ -78,7 +73,7 @@ class TagController extends AbstractController
             $this->entityManager->flush();
 
             return $this->json([
-                'tag'   => $tag->normalize(),
+                'tag'   => $tag->serialize(),
                 'alert' => [
                     'text'  => ['Tag has been created!', 'Tag name: ' . $content->name],
                     'level' => 'success'

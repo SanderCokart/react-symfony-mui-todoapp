@@ -53,14 +53,14 @@ class Tag
         return $this;
     }
 
-    public function normalize()
+    public function serialize()
     {
         $encoders = [new JsonEncoder()];
         $normalizers = [new ObjectNormalizer()];
 
         $serializer = new Serializer($normalizers, $encoders);
 
-        return $serializer->normalize($this, 'json');
+        return $serializer->serialize($this, 'json');
     }
 
 }
