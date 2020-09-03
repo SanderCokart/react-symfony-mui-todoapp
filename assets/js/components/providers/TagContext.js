@@ -11,7 +11,7 @@ class TagContextProvider extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            tags:      null,
+            tags:      [],
             isLoading: false,
             message:   {
                 text:  null,
@@ -39,34 +39,36 @@ class TagContextProvider extends React.Component {
         //PREPARATION START
         if (this.state.isLoading) return;
         this.setState({isLoading: true});
-        const initialTags = [...this.state.tags];
+        const INITIAL_TAGS = [...this.state.tags];
         //PREPARATION END
+
+        const RESET = () => this.setState({tags: INITIAL_TAGS, isLoading: false});
 
         try {
             //TEMPORARY ID START
-            const newTagWithId = {...tag, id: this.findHighestId()};
-            this.setState({tags: [...initialTags, newTagWithId], isLoading: true});
+            const NEW_TAG_FROM_CLIENT_WITH_ID = {...tag, id: this.findHighestId()};
+            this.setState({tags: [...this.state.tags.concat(NEW_TAG_FROM_CLIENT_WITH_ID)], isLoading: true});
             //TEMPORARY ID END
 
             //REQUEST START
             const r = await axios.post('/api/tag/create', tag);
-            const {alert, tag: newTagFromServer} = r.data;
-            this.context.setAlert(alert);
+            const {ALERT, tag: NEW_TAG_FROM_SERVER} = r.data;
+            this.context.setAlert(ALERT);
             //REQUEST END
 
             //SERVER SIDE ERROR START
-            if (alert.level !== 'success') {
-                this.setState({tags: initialTags, isLoading: false});
+            if (ALERT.level !== 'success') {
+                RESET();
                 return;
             }
             //SERVER SIDE ERROR END
 
             //CHECK IF SERVER DATA MATCHES CLIENT DATA START
-            if (newTagFromServer.id !== newTagWithId.id) {
-                const tags = [...this.state.tags];
-                let tag = tags.find(tag => tag.id === newTagWithId.id);
-                tag.id = newTagFromServer.id;
-                this.setState({tags: tags, isLoading: false});
+            if (NEW_TAG_FROM_SERVER.id !== NEW_TAG_FROM_CLIENT_WITH_ID.id) {
+                const TAGS = [...this.state.tags];
+                let tag = TAGS.find(tag => tag.id === NEW_TAG_FROM_CLIENT_WITH_ID.id);
+                tag.id = NEW_TAG_FROM_SERVER.id;
+                this.setState({tags: TAGS, isLoading: false});
             } else {
                 this.setState({isLoading: false});
             }
@@ -81,7 +83,7 @@ class TagContextProvider extends React.Component {
                 ],
                 level: 'error',
             });
-            this.setState({tags: initialTags, isLoading: false});
+            RESET();
             //CLIENT SIDE ERROR END
         }
     }
@@ -90,7 +92,7 @@ class TagContextProvider extends React.Component {
     /**
      * Takes an array of tags and finds the highest number of the id's, adds +1 to it and returns that
      * @param {[]} [array=this.state.tags] - array of tags
-     * @returns {number} - new id
+     * @returns {number} - generated id
      */
     findHighestId(array = this.state.tags) {
         let max = 0;
@@ -146,12 +148,12 @@ class TagContextProvider extends React.Component {
         //PREPARATION START
         if (this.state.isLoading) return;
         this.setState({isLoading: true});
-        const initialTags = [...this.state.tags];
+        const INITIAL_TAGS = [...this.state.tags];
         //PREPARATION END
 
         try {
             //UPDATE CLIENT START
-            let newTag = [...initialTags].find(tag => tag.id === originalTag.id);
+            let newTag = [...INITIAL_TAGS].find(tag => tag.id === originalTag.id);
 
             if (newTag.name === originalTag.name) {
                 this.context.setAlert({text: 'There was no change to the tag', level: 'info'});
@@ -168,7 +170,7 @@ class TagContextProvider extends React.Component {
 
             //SERVER SIDE ERROR START
             if (alert.level !== 'success') {
-                this.setState({tags: initialTags, isLoading: false});
+                this.setState({tags: INITIAL_TAGS, isLoading: false});
             } else this.setState({isLoading: false});
             //SERVER SIDE ERROR END
 
@@ -257,15 +259,15 @@ class TagContextProvider extends React.Component {
      */
     resetTag(oldTag) {
         //copy state
-        const tags = [...this.state.tags];
+        // const tags = [...this.state.tags];
         //find tag in copy
-        let tag = tags.find(tag => tag.id === oldTag.id);
+        let tag = this.state.tags.find(tag => tag.id === oldTag.id);
         //replace new name to the old name
         tag.name = oldTag.name;
         //overwrite the state
-        this.setState({
-            tags: tags,
-        });
+        // this.setState({
+        //     tags: tags,
+        // });
     }
 
     render() {
