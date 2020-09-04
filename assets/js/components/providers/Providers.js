@@ -1,15 +1,15 @@
 import React from 'react';
 import TodoContextProvider from './TodoContext';
-import TagContextProvider from './TagContext';
 import AlertContextProvider from './AlertContext';
+import NewTagContextProvider from './NewTagContext';
 
 const Providers = (props) => {
     return (
         <AlertContextProvider>
             <TodoContextProvider>
-                <TagContextProvider>
+                <NewTagContextProvider>
                     {props.children}
-                </TagContextProvider>
+                </NewTagContextProvider>
             </TodoContextProvider>
         </AlertContextProvider>
     );

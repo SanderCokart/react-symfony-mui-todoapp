@@ -2,7 +2,7 @@ import React, {Component, createContext} from 'react';
 
 export const AlertContext = createContext();
 
-class AlertContextProvider extends Component {
+export default class AlertContextProvider extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -50,4 +50,10 @@ class AlertContextProvider extends Component {
     }
 }
 
-export default AlertContextProvider;
+
+export const withAlertContext = Component => (
+    props => (
+        <AlertContext.Consumer>
+            {context => <Component alertContext={context} {...props} />}
+        </AlertContext.Consumer>
+    ));
