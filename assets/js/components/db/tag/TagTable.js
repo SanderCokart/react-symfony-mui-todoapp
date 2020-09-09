@@ -92,8 +92,10 @@ const TagTable = () => {
                                   <TableCell>
                                       {state.tagEditId === tag.id ?
                                           <form noValidate onSubmit={onEditSubmit}>
-                                              <TextField type="text" value={tag.name} name="name" fullWidth
-                                                         autoFocus onChange={(e) => context.handleChange(tag, e)}/>
+                                              <TextField type="text" value={tag.name} label={state.tag.name} name="name"
+                                                         fullWidth
+                                                         autoFocus onFocus={(e) => e.target.select()}
+                                                         onChange={(e) => context.handleChange(tag, e)}/>
                                           </form>
                                           :
                                           <Typography>{tag.name}</Typography>
@@ -105,7 +107,7 @@ const TagTable = () => {
                                               <IconButton color="inherit" onClick={() => setEdit(tag)}>
                                                   <EditIcon/>
                                               </IconButton>
-                                              <DeleteButton deleteFunction={/*todo context.delete*/() => {}} entity={tag}/>
+                                              <DeleteButton deleteFunction={context.delete} entity={tag}/>
                                           </>
                                           :
                                           <>
