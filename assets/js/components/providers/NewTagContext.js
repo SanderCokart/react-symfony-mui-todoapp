@@ -1,6 +1,5 @@
 import React, {createContext} from 'react';
 import {withAlertContext} from './AlertContext';
-import CloneArray from '../../functions/CloneArray';
 import axios from 'axios';
 
 export const NewTagContext = createContext();
@@ -9,22 +8,16 @@ class NewTagContextProvider extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            tags:       [],
+            tags:       null,
             processing: false,
-            // read:         this.read.bind(this),
+            read:       this.read.bind(this),
             create:     this.create.bind(this),
             // delete:       this.delete.bind(this),
             // update:       this.update.bind(this),
             // handleChange: this.handleChange.bind(this),
-            loadIcon:   {
-                create: false,
-                update: false,
-                read:   false,
-                delete: false,
-            },
         };
-        this.create({name: 'bla'});
-    }
+    };
+
 
     render() {
         return (
@@ -43,7 +36,7 @@ class NewTagContextProvider extends React.Component {
     prepare() {
         if (this.state.processing) return false;
         this.setState({processing: true});
-        return CloneArray(this.state.tags);
+        return this.state.tags.slice();
     }
 
     /**
@@ -64,48 +57,97 @@ class NewTagContextProvider extends React.Component {
      * @param {string} createdTag.name - name of the created tag
      */
     async create(createdTag) {
-        // PREPARE START
+        // PREPARATION START
         const INITIAL_TAGS = this.prepare();
-        const RESET = () => this.setState({tags: INITIAL_TAGS, processing: false});
-        // PREPARE END
+        const RESET = () => this.setState(
+            {tags: INITIAL_TAGS, processing: false},
+        );
+        const {alertContext} = this.props;
+        // PREPARATION END
 
         if (INITIAL_TAGS)
             try {
                 // CLIENT OPTIMIZATION START
                 const NEW_TAG_FROM_CLIENT_WITH_ID = {...createdTag, id: this.findHighestId()};
-                this.setState({tags: [this.state.tags.concat(NEW_TAG_FROM_CLIENT_WITH_ID)], processing: false});
+                this.setState({tags: this.state.tags.concat(NEW_TAG_FROM_CLIENT_WITH_ID)});
                 // CLIENT OPTIMIZATION END
 
                 // REQUEST START
                 const r = await axios.post('/api/tag/create', NEW_TAG_FROM_CLIENT_WITH_ID);
-                const {ALERT, tag: NEW_TAG_FROM_SERVER} = r.data;
+                const {alert: ALERT, tag: NEW_TAG_FROM_SERVER} = r.data;
                 // REQUEST END
 
                 // PROCESS ALERT
-                this.props.alertContext.setAlert(ALERT);
+                alertContext.setAlert(ALERT);
 
                 // SERVER SIDE ERROR CATCHER START
-                if (ALERT.level !== 'sucesss') {
+                if (ALERT.level !== 'success') {
                     RESET();
-                    return;
+                    return false;
                 }
                 // SERVER SIDE ERROR CATCHER END
 
+                // IF SERVER SIDE IS SUCCESSFUL
+
                 // CHECK IF SERVER DATA MATCHES CLIENT DATA START
                 if (NEW_TAG_FROM_SERVER.id !== NEW_TAG_FROM_CLIENT_WITH_ID.id) {
-                    const TAGS = CloneArray(this.state.tags);
-                    let tag = TAGS.find(tag => tag.id === NEW_TAG_FROM_CLIENT_WITH_ID.id);
-                    tag.id = NEW_TAG_FROM_SERVER.id;
-                    this.setState({tags: TAGS, isLoading: false});
-                } else {
-                    this.setState({isLoading: false});
+                    // CORRECT THE DATA
+                    this.setState((state) => {
+                        const TAGS = state.tags.slice();
+                        const TAG = TAGS.find(tag => tag.id === NEW_TAG_FROM_CLIENT_WITH_ID.id);
+                        TAG.id = NEW_TAG_FROM_SERVER.id;
+                        return {tags: TAGS, processing: false};
+                    });
                 }
                 // CHECK IF SERVER DATA MATCHES CLIENT DATA END
 
-            } catch (e) {
+                else {
+                    this.setState({processing: false});
+                }
 
+            } catch (e) {
+                alertContext.setAlert({
+                    text:  [
+                        e,
+                        'Something went wrong while trying to create a tag.',
+                        'Check your internet connection to make sure you didn\'t lose it, alternatively our servers may be down for maintenance.',
+                    ],
+                    level: 'error',
+                });
+                RESET();
             }
     }
+
+    /**
+     * Gets all tags from the database
+     * @returns {Promise<void>}
+     */
+    async read() {
+        // PREPARATION START
+        this.prepare();
+        // PREPARATION END
+
+        try {
+            //REQUEST
+            const r = await axios.get('/api/tag/read');
+            //HANDLE REQUEST
+            this.setState({tags: r.data});
+        } catch (e) {
+            //CLIENT SIDE ERROR START
+            this.context.setAlert({
+                text:  [
+                    e,
+                    'Something went wrong while trying to create a tag.',
+                    'Check your internet connection to make sure you didn\'t lose it, alternatively our servers may be down for maintenance.',
+                ],
+                level: 'error',
+            });
+            this.setState({tags: []});
+            //CLIENT SIDE ERROR END
+        }
+    }
+
+
 }
 
 export default withAlertContext(NewTagContextProvider);

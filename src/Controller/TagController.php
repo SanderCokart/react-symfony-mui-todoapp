@@ -73,7 +73,7 @@ class TagController extends AbstractController
             $this->entityManager->flush();
 
             return $this->json([
-                'tag'   => $tag->serialize(),
+                'tag'   => $tag,
                 'alert' => [
                     'text'  => ['Tag has been created!', 'Tag name: ' . $content->name],
                     'level' => 'success'

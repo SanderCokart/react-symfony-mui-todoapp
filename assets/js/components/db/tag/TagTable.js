@@ -19,7 +19,7 @@ import {
 //MUI ICONS
 import {Close as CloseIcon, Done as DoneIcon, Edit as EditIcon, Refresh as RefreshIcon} from '@material-ui/icons';
 //CONTEXTS
-import {TagContext} from '../../providers/TagContext';
+import {NewTagContext} from '../../providers/NewTagContext';
 //CUSTOM COMPONENTS
 import CreateFields from '../components/CreateFields';
 import DeleteButton from '../components/DeleteButton';
@@ -29,7 +29,7 @@ import constraints from './config/textFields.constraints.json';
 
 const TagTable = () => {
           //HOOKS START
-          const context = useContext(TagContext);
+          const context = useContext(NewTagContext);
           const {tags} = context;
           const theme = useTheme();
           const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -105,7 +105,7 @@ const TagTable = () => {
                                               <IconButton color="inherit" onClick={() => setEdit(tag)}>
                                                   <EditIcon/>
                                               </IconButton>
-                                              <DeleteButton deleteFunction={context.delete} entity={tag}/>
+                                              <DeleteButton deleteFunction={/*todo context.delete*/() => {}} entity={tag}/>
                                           </>
                                           :
                                           <>
