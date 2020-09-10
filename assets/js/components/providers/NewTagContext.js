@@ -164,7 +164,7 @@ class NewTagContextProvider extends React.Component {
             alertContext.setAlert({
                 text:  [
                     e,
-                    'Something went wrong while trying to create a tag.',
+                    'Something went wrong while trying to get the tags from the database.',
                     'Check your internet connection to make sure you didn\'t lose it or perhaps our servers may be down for maintenance.',
                 ],
                 level: 'error',
